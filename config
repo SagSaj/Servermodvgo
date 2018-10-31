@@ -1,0 +1,3 @@
+#!/bin/bash      
+
+ export GOPATH=/Users/Stas/Dropbox/goRPC
