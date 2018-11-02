@@ -2,6 +2,8 @@ package PersonStruct
 
 import (
 	"fmt"
+	"generatetoken"
+	"hash/fnv"
 	"log"
 	mongo "subdmongo"
 	"time"
@@ -43,15 +45,17 @@ type Person struct {
 	AccountID int
 }
 
+func hash(s string) uint32 {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return h.Sum32()
+}
 func generateTocken(login string) string {
-
-	for key, e := range ServicePerson {
-		if e.PersonInf.Login == login {
-			e.TimeActivity = time.Now()
-			return key
-		}
+	s, err := generatetoken.GenerateRandomStringURLSafe(8)
+	if err != nil {
+		return fmt.Sprint(hash(login))
 	}
-	return login + time.Now().String()
+	return s + fmt.Sprint(hash(login))
 }
 func InsertPerson(login, password string) (Person, error) {
 	//	p := Person{Login: login, Password: password}

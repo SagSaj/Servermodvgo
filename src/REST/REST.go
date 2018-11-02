@@ -16,6 +16,9 @@ import (
 )
 
 var serverString = "localhost:8000" //5050
+func LogString(s string) {
+	log.Println("Inf: " + s)
+}
 
 //Done
 func HandleFunctionRegistration(w http.ResponseWriter, r *http.Request) {
@@ -58,6 +61,8 @@ func HandleFunctionRegistration(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B))
 		if m.AuthMethod == "password" {
 			//	var p PersonStruct.Person
 			p, err := PersonStruct.FindPersonByLogin(m.Login, m.Password)
@@ -147,6 +152,8 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B))
 		if m.AuthMethod == "token" {
 			//	var p PersonStruct.Person
 			p, ok := PersonStruct.FindPersonByToken(m.Token)
@@ -212,6 +219,7 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 				}
 				b, err := json.Marshal(mo)
 				if err == nil {
+					LogString(string(b))
 					w.Write(b)
 				} else {
 					http.Error(w, err.Error(), 400)
@@ -255,6 +263,8 @@ func HandleFunctionBalance(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B))
 		p, ok := PersonStruct.FindPersonByToken(m.Token)
 		if !ok {
 			http.Error(w, err.Error(), 400)
@@ -265,6 +275,7 @@ func HandleFunctionBalance(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err := json.Marshal(mo)
 		if err == nil {
+			LogString(string(b))
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -320,6 +331,8 @@ func HandleFunctionArenaEnter(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B))
 		//
 		a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
 		a.AddNewTockenWithoutTeam(m.Token)
@@ -330,6 +343,7 @@ func HandleFunctionArenaEnter(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err := json.Marshal(mo)
 		if err == nil {
+			LogString(string(b))
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -394,6 +408,8 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B))
 		//Verify
 		for _, value := range m.Active {
 			memp.VerifyActive(m.Token, strconv.Itoa(m.ArenaID), value.AccountID, value.BetValue)
@@ -433,6 +449,7 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err := json.Marshal(mo)
 		if err == nil {
+			LogString(string(b))
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -500,6 +517,8 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B))
 		//Verify
 		res := StructForREST{
 			ArenaID:   m.ArenaID,
@@ -538,7 +557,9 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			Status: stat,
 		}
 		b, err := json.Marshal(mo)
+
 		if err == nil {
+			LogString(string(b))
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -579,6 +600,8 @@ func HandleFunctionArenaQuit(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B))
 		//
 		a, ok := mem.Arena.FindArenaEnd(strconv.Itoa(m.ArenaID))
 		stans := "ok"
@@ -592,6 +615,7 @@ func HandleFunctionArenaQuit(w http.ResponseWriter, r *http.Request) {
 			Status: stans,
 		}
 		b, err := json.Marshal(mo)
+		LogString(string(b))
 		if err == nil {
 			w.Write(b)
 		} else {
@@ -647,6 +671,8 @@ func HandleFunctionArenaResult(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B))
 		//
 		a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
 		p, ok := PersonStruct.FindPersonByToken(m.Token)
@@ -680,7 +706,7 @@ func HandleFunctionArenaResult(w http.ResponseWriter, r *http.Request) {
 		}
 
 		c, err := json.Marshal(mo)
-
+		LogString(string(c))
 		if err != nil {
 			w.Write(c)
 		} else {
