@@ -10,12 +10,13 @@ import (
 	mem "memcash"
 	memp "memcashparry"
 	"net/http"
+	"os"
 	. "reststruct"
 	"strconv"
 	"subdmongo"
 )
 
-var serverString = "localhost:8000" //5050
+var serverString = ":8000" //5050
 func LogString(s string) {
 	log.Println("Inf: " + s)
 }
@@ -757,7 +758,10 @@ func GoServerListen() {
 	/*GET /currentVersion
 	Параметры от клиента: нет
 	Ответ сервера: строка вида v.1.0.0 */
-
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = serverString
+	}
 	http.HandleFunc("/currentVersion", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, par.CurrentVersion)
 	}) //tested
@@ -775,7 +779,7 @@ func GoServerListen() {
 	http.HandleFunc("/parry", HandleFunctionParry)
 	http.HandleFunc("/arena/quit", HandleFunctionArenaQuit)
 	http.HandleFunc("/arena/result", HandleFunctionArenaResult)
-	if err := http.ListenAndServe(serverString, nil); err != nil {
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 
