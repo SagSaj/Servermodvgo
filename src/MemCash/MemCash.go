@@ -19,7 +19,7 @@ type ArenaInformation struct {
 	TockenTeamB         string
 	TockenArrayA        [10]string
 	TockenArrayB        [10]string
-	Tockens             []string
+	Tockens             []int
 	TockenWin           map[string]bool
 	VerifiedArenaArrayA [10]bool
 	VerifiedArenaArrayB [10]bool
@@ -32,6 +32,7 @@ type ArenaInformation struct {
 }
 
 func (a *ArenaInformation) ArenaInit(ID string) {
+	a.Bets = make(map[int]float32)
 	a.IDArena = ID
 	a.DateTimeBeginArena = t.Now()
 	a.IsEndArena = false
@@ -70,8 +71,11 @@ func (a *ArenaInformation) VerifyActives(AccountID1 int) bool {
 	_, ok := a.Bets[AccountID1]
 	return ok
 }
-func (a *ArenaInformation) AddNewTockenWithoutTeam(PlayerTocken string) {
-	a.Tockens = append(a.Tockens, PlayerTocken)
+func (a *ArenaInformation) AddNewTockenWithoutTeam(AccointID int) {
+	log.Println("Add new enemy " + strconv.Itoa(AccointID))
+
+	a.Tockens = append(a.Tockens, AccointID)
+	//log.Println(a.Tockens)
 
 }
 func (a *ArenaInformation) GetEnemies(TeamTocken string) [10]string {
@@ -81,7 +85,8 @@ func (a *ArenaInformation) GetEnemies(TeamTocken string) [10]string {
 		return a.TockenArrayB
 	}
 }
-func (a *ArenaInformation) GetEnemiesWithoutTeam(TeamTocken string) []string {
+func (a *ArenaInformation) GetEnemiesWithoutTeam() []int {
+
 	return a.Tockens
 }
 func (a *ArenaInformation) TokenWin(Tocken string) {
@@ -222,13 +227,13 @@ func (a *ArenaInformation) GetLosesWithoutTeam() ([]StructForREST, bool) {
 }
 
 type ArenaService struct {
-	Arena map[string]ArenaInformation
+	Arena map[string]*ArenaInformation
 }
 
 var Arena ArenaService
 
 func init() {
-	Arena.Arena = make(map[string]ArenaInformation, 10000)
+	Arena.Arena = make(map[string]*ArenaInformation, 10000)
 	go DeleteLongTocken()
 }
 func DeleteLongTocken() {
@@ -239,24 +244,24 @@ func DeleteLongTocken() {
 }
 func (a *ArenaService) FindArena(Toc string) *ArenaInformation {
 	s, ok := a.Arena[Toc]
-	s1 := &s
 	if !ok {
-		s1 = a.AddArena(Toc)
+
+		s = a.AddArena(Toc)
+		return s
 	}
-	return s1
+	return s
 }
 func (a *ArenaService) FindArenaEnd(Toc string) (*ArenaInformation, bool) {
 	s, ok := a.Arena[Toc]
-	s1 := &s
 	if !ok {
 		return nil, false
 	}
-	return s1, true
+	return s, true
 }
 func (a *ArenaService) AddArena(Toc string) *ArenaInformation {
 	var ai ArenaInformation
 	ai.ArenaInit(Toc)
-	a.Arena[Toc] = ai
+	a.Arena[Toc] = &ai
 	return &ai
 }
 func (a *ArenaService) DeleteByTimeout() {

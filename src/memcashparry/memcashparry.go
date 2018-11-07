@@ -1,8 +1,11 @@
 package memcashparry
 
-import . "reststruct"
-import mem "memcash"
-import "PersonStruct"
+import (
+	"PersonStruct"
+	"log"
+	mem "memcash"
+	. "reststruct"
+)
 
 type Parry struct {
 	Parres []StructForREST
@@ -18,7 +21,7 @@ func (p *Parry) AddADV(r StructForREST, T string, FromID, ToID int) {
 	p.To = append(p.To, ToID)
 }
 func (p *Parry) DeleteADV(r StructForREST) {
-	for i := 0; i < len(p.Parres); i = +1 {
+	for i := 0; i < len(p.Parres); i += 1 {
 		if p.Parres[i] == r {
 			p.Parres = append(p.Parres[:i], p.Parres[i+1:]...)
 			p.Types = append(p.Types[:i], p.Types[i+1:]...)
@@ -37,7 +40,7 @@ func (p *Parry) DeleteADVbyIndex(i int) {
 
 }
 func (p *Parry) ReplaceADV(r StructForREST, typeP string) {
-	for i := 0; i < len(p.Parres); i = +1 {
+	for i := 0; i < len(p.Parres); i += 1 {
 		if p.Parres[i] == r {
 			p.Types[i] = typeP
 			return
@@ -45,10 +48,10 @@ func (p *Parry) ReplaceADV(r StructForREST, typeP string) {
 	}
 }
 
-var ParryMems map[string]Parry
+var ParryMems map[string]*Parry
 
 func init() {
-	ParryMems = make(map[string]Parry, 10000)
+	ParryMems = make(map[string]*Parry, 10000)
 	go DeleteLongTocken()
 }
 func AddParry(p StructForREST, arenaID string, parryType string, ToID int, FromID int) {
@@ -56,7 +59,7 @@ func AddParry(p StructForREST, arenaID string, parryType string, ToID int, FromI
 	if !ok {
 		pz := Parry{}
 		pz.AddADV(p, parryType, FromID, ToID)
-		ParryMems[arenaID] = pz
+		ParryMems[arenaID] = &pz
 	} else {
 		r.AddADV(p, parryType, FromID, ToID)
 	}
@@ -71,8 +74,8 @@ func GetIncoming(ID string, IDFrom int) []StructForREST {
 	a := []StructForREST{}
 	p, ok := ParryMems[ID]
 	if ok {
-		for i := 0; i < len(p.Parres); i = +1 {
-			if p.Types[i] == "incoming" {
+		for i := 0; i < len(p.Parres); i += 1 {
+			if p.Types[i] == "incoming" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
 		}
@@ -83,8 +86,8 @@ func GetActive(ID string, IDFrom int) []StructForREST {
 	a := []StructForREST{}
 	p, ok := ParryMems[ID]
 	if ok {
-		for i := 0; i < len(p.Parres); i = +1 {
-			if p.Types[i] == "active" {
+		for i := 0; i < len(p.Parres); i += 1 {
+			if p.Types[i] == "active" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
 		}
@@ -95,8 +98,8 @@ func GetPending(ID string, IDFrom int) []StructForREST {
 	a := []StructForREST{}
 	p, ok := ParryMems[ID]
 	if ok {
-		for i := 0; i < len(p.Parres); i = +1 {
-			if p.Types[i] == "pending" {
+		for i := 0; i < len(p.Parres); i += 1 {
+			if p.Types[i] == "pending" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
 		}
@@ -107,8 +110,8 @@ func GetRejected(ID string, IDFrom int) []StructForREST {
 	a := []StructForREST{}
 	p, ok := ParryMems[ID]
 	if ok {
-		for i := 0; i < len(p.Parres); i = +1 {
-			if p.Types[i] == "rejected" {
+		for i := 0; i < len(p.Parres); i += 1 {
+			if p.Types[i] == "rejected" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
 		}
@@ -119,8 +122,8 @@ func GetDeclined(ID string, IDFrom int) []StructForREST {
 	a := []StructForREST{}
 	p, ok := ParryMems[ID]
 	if ok {
-		for i := 0; i < len(p.Parres); i = +1 {
-			if p.Types[i] == "declined" {
+		for i := 0; i < len(p.Parres); i += 1 {
+			if p.Types[i] == "declined" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
 		}
@@ -131,7 +134,7 @@ func IsAddParry(ArenaID string, ToAccountID int, FromAccountID int) bool {
 	p, ok := ParryMems[ArenaID]
 
 	if !ok {
-		return true
+		return false
 	} else {
 		for index, value := range p.To {
 			if value == ToAccountID && FromAccountID == p.From[index] {
@@ -145,28 +148,42 @@ func IsAddParry(ArenaID string, ToAccountID int, FromAccountID int) bool {
 	}
 }
 func VerifyActive(Tocken string, ArenaID string, accountIDTo int, bet float32) {
-	//ok2 := mem.Arena.FindArenaEnd()
-	_, ok := ParryMems[ArenaID]
+	//ok2 := mem.Arena.FindArenaEnd()//Find in Incoming addDoubled
+	p, ok := ParryMems[ArenaID]
 	if ok {
-		a := mem.Arena.FindArena(Tocken)
+		a := mem.Arena.FindArena(ArenaID)
 		pers, ok := PersonStruct.FindPersonByToken(Tocken)
-		if ok {
+		okas := false
+		for index, value := range p.Types {
+			log.Println(p.Parres[index])
+			if value == "pending" && p.To[index] == accountIDTo {
+				okas = true
+				p.ReplaceADV(p.Parres[index], "active")
+			}
+			if value == "incoming" && p.From[index] == accountIDTo {
+				okas = true
+				p.ReplaceADV(p.Parres[index], "active")
+			}
+		}
+		if okas && ok {
 			a.AddNewParry(pers.AccountID, accountIDTo, bet)
 		}
 	}
 }
+
+//Ne verno
 func VerifyReject(Tocken string, ArenaID string, accountIDTo int, bet float32) {
 	p, ok := ParryMems[ArenaID]
 	if ok {
 		for index, value := range p.Types {
-			if value == "pending" {
+			if value == "pending" && p.To[index] == accountIDTo {
 				p.DeleteADVbyIndex(index)
-				VerifyDecline(Tocken, ArenaID, accountIDTo, bet)
+				VerifyReject(Tocken, ArenaID, accountIDTo, bet)
 				return
 			}
-			if value == "incoming" {
+			if value == "incoming" && p.From[index] == accountIDTo {
 				p.DeleteADVbyIndex(index)
-				VerifyDecline(Tocken, ArenaID, accountIDTo, bet)
+				VerifyReject(Tocken, ArenaID, accountIDTo, bet)
 				return
 			}
 		}
@@ -176,12 +193,14 @@ func VerifyDecline(Tocken string, ArenaID string, accountIDTo int, bet float32) 
 	p, ok := ParryMems[ArenaID]
 	if ok {
 		for index, value := range p.Types {
-			if value == "pending" {
+			if value == "pending" && p.To[index] == accountIDTo {
+
 				p.DeleteADVbyIndex(index)
 				VerifyDecline(Tocken, ArenaID, accountIDTo, bet)
 				return
+
 			}
-			if value == "incoming" {
+			if value == "incoming" && p.From[index] == accountIDTo {
 				p.DeleteADVbyIndex(index)
 				VerifyDecline(Tocken, ArenaID, accountIDTo, bet)
 				return

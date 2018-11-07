@@ -13,7 +13,7 @@ type PersonsBalance struct {
 	Balance float32
 }
 
-var ServicePerson map[string]PersonService
+var ServicePerson map[string]*PersonService
 
 type PersonService struct {
 	PersonInf    Person
@@ -21,7 +21,7 @@ type PersonService struct {
 }
 
 func init() {
-	ServicePerson = make(map[string]PersonService, 10000)
+	ServicePerson = make(map[string]*PersonService, 10000)
 	go DeleteLongTocken()
 }
 func DeleteLongTocken() {
@@ -72,7 +72,7 @@ func InsertPerson(login, password string) (Person, error) {
 	p.LoseCount = l.LoseCount
 	p.AccountID = l.IDAccount
 	p.Tocken = generateTocken(login)
-	ServicePerson[p.Tocken] = PersonService{PersonInf: p, TimeActivity: time.Now()}
+	ServicePerson[p.Tocken] = &PersonService{PersonInf: p, TimeActivity: time.Now()}
 	return p, nil
 }
 func InsertPersonWithID(login, password string, ID int) (Person, error) {
@@ -90,7 +90,7 @@ func InsertPersonWithID(login, password string, ID int) (Person, error) {
 	p.AccountID = l.IDAccount
 	p.LoseCount = l.LoseCount
 	p.Tocken = generateTocken(login)
-	ServicePerson[p.Tocken] = PersonService{PersonInf: p, TimeActivity: time.Now()}
+	ServicePerson[p.Tocken] = &PersonService{PersonInf: p, TimeActivity: time.Now()}
 	return p, nil
 }
 func FindPersonByLogin(login, password string) (Person, error) {
@@ -110,7 +110,7 @@ func FindPersonByLogin(login, password string) (Person, error) {
 	p.AccountID = l.IDAccount
 	p.LoseCount = l.LoseCount
 	p.Tocken = generateTocken(login)
-	ServicePerson[p.Tocken] = PersonService{PersonInf: p, TimeActivity: time.Now()}
+	ServicePerson[p.Tocken] = &PersonService{PersonInf: p, TimeActivity: time.Now()}
 	return p, nil
 }
 func FindPersonByToken(Toc string) (Person, bool) {
@@ -118,7 +118,7 @@ func FindPersonByToken(Toc string) (Person, bool) {
 	if !ok {
 		return Person{}, false
 	}
-	ServicePerson[Toc] = PersonService{PersonInf: p.PersonInf, TimeActivity: time.Now()}
+	ServicePerson[Toc] = &PersonService{PersonInf: p.PersonInf, TimeActivity: time.Now()}
 	return p.PersonInf, true
 }
 func WinMatch(Token string, bet float32) {
@@ -155,5 +155,5 @@ func AddAccountIDLogIN(Token string, AccountID int) {
 		log.Println("Bad  tocken " + Token + " in registration")
 	}
 	p.PersonInf.AccountID = AccountID
-	ServicePerson[Token] = PersonService{PersonInf: p.PersonInf, TimeActivity: time.Now()}
+	ServicePerson[Token] = &PersonService{PersonInf: p.PersonInf, TimeActivity: time.Now()}
 }

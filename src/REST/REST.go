@@ -16,9 +16,9 @@ import (
 	"subdmongo"
 )
 
-var serverString = ":8000" //5050
-func LogString(s string) {
-	log.Println("Inf: " + s)
+var serverString = "8000" //5050
+func LogString(s string, funct string) {
+	log.Println("Inf " + funct + ":" + s)
 }
 
 //Done
@@ -63,7 +63,7 @@ func HandleFunctionRegistration(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		res2B, _ := json.Marshal(m)
-		LogString(string(res2B))
+		LogString(string(res2B), "registration")
 		if m.AuthMethod == "password" {
 			//	var p PersonStruct.Person
 			p, err := PersonStruct.FindPersonByLogin(m.Login, m.Password)
@@ -154,7 +154,7 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		res2B, _ := json.Marshal(m)
-		LogString(string(res2B))
+		LogString(string(res2B), "Login")
 		if m.AuthMethod == "token" {
 			//	var p PersonStruct.Person
 			p, ok := PersonStruct.FindPersonByToken(m.Token)
@@ -220,7 +220,7 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 				}
 				b, err := json.Marshal(mo)
 				if err == nil {
-					LogString(string(b))
+					LogString(string(b), "Login")
 					w.Write(b)
 				} else {
 					http.Error(w, err.Error(), 400)
@@ -265,7 +265,7 @@ func HandleFunctionBalance(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		res2B, _ := json.Marshal(m)
-		LogString(string(res2B))
+		LogString(string(res2B), "Balance")
 		p, ok := PersonStruct.FindPersonByToken(m.Token)
 		if !ok {
 			http.Error(w, err.Error(), 400)
@@ -276,7 +276,7 @@ func HandleFunctionBalance(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err := json.Marshal(mo)
 		if err == nil {
-			LogString(string(b))
+			LogString(string(b), "Balance")
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -333,18 +333,25 @@ func HandleFunctionArenaEnter(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		res2B, _ := json.Marshal(m)
-		LogString(string(res2B))
+		LogString(string(res2B), "Enter")
+
 		//
 		a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
-		a.AddNewTockenWithoutTeam(m.Token)
-
+		p, ok := PersonStruct.FindPersonByToken(m.Token)
+		if !ok {
+			http.Error(w, err.Error(), 400)
+		}
+		(a).AddNewTockenWithoutTeam(p.AccountID)
+		log.Println("Enter")
+		a = mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
+		log.Println(a.GetEnemiesWithoutTeam())
 		//
 		mo := Messageout{
 			Status: "ok",
 		}
 		b, err := json.Marshal(mo)
 		if err == nil {
-			LogString(string(b))
+			LogString(string(b), "Enter")
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -410,7 +417,7 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		res2B, _ := json.Marshal(m)
-		LogString(string(res2B))
+		LogString(string(res2B), "Situation")
 		//Verify
 		for _, value := range m.Active {
 			memp.VerifyActive(m.Token, strconv.Itoa(m.ArenaID), value.AccountID, value.BetValue)
@@ -433,11 +440,10 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 		massD := memp.GetDeclined(strconv.Itoa(m.ArenaID), p.AccountID)
 		//
 		a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
-		strs := a.GetEnemies(m.Token)
-		var massIds []int
+		strs := a.GetEnemiesWithoutTeam()
+		massIds := []int{}
 		for _, e := range strs {
-			igf, _ := strconv.Atoi(e)
-			massIds = append(massIds, igf)
+			massIds = append(massIds, e)
 		}
 		mo := Messageout{
 			Status:     "ok",
@@ -450,7 +456,7 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err := json.Marshal(mo)
 		if err == nil {
-			LogString(string(b))
+			LogString(string(b), "Situation")
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -519,22 +525,22 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		res2B, _ := json.Marshal(m)
-		LogString(string(res2B))
+		LogString(string(res2B), "Parry")
 		//Verify
-		res := StructForREST{
-			ArenaID:   m.ArenaID,
-			AccountID: m.ToAccountID,
-			ParryType: m.ParryType,
-			BetValue:  m.BetValue,
-		}
-
 		p, ok := PersonStruct.FindPersonByToken(m.Token)
 		if !ok {
 			http.Error(w, "Token not find", 400)
 		}
-		res2 := StructForREST{
+		res := StructForREST{
 			ArenaID:   m.ArenaID,
 			AccountID: p.AccountID,
+			ParryType: m.ParryType,
+			BetValue:  m.BetValue,
+		}
+
+		res2 := StructForREST{
+			ArenaID:   m.ArenaID,
+			AccountID: m.ToAccountID,
 			ParryType: m.ParryType,
 			BetValue:  m.BetValue,
 		}
@@ -543,7 +549,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			stat = "already exist"
 		} else {
 			memp.AddParry(res, strconv.Itoa(m.ArenaID), "incoming", m.ToAccountID, p.AccountID)
-			memp.AddParry(res2, strconv.Itoa(m.ArenaID), "pending", m.ToAccountID, p.AccountID)
+			memp.AddParry(res2, strconv.Itoa(m.ArenaID), "pending", p.AccountID, m.ToAccountID)
 		}
 		/* a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
 		strs := a.GetEnemies(m.Token)
@@ -560,7 +566,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 		b, err := json.Marshal(mo)
 
 		if err == nil {
-			LogString(string(b))
+			LogString(string(b), "Parry")
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -602,7 +608,7 @@ func HandleFunctionArenaQuit(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		res2B, _ := json.Marshal(m)
-		LogString(string(res2B))
+		LogString(string(res2B), "Quit")
 		//
 		a, ok := mem.Arena.FindArenaEnd(strconv.Itoa(m.ArenaID))
 		stans := "ok"
@@ -616,8 +622,9 @@ func HandleFunctionArenaQuit(w http.ResponseWriter, r *http.Request) {
 			Status: stans,
 		}
 		b, err := json.Marshal(mo)
-		LogString(string(b))
+
 		if err == nil {
+			LogString(string(b), "Quit")
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -673,7 +680,7 @@ func HandleFunctionArenaResult(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		res2B, _ := json.Marshal(m)
-		LogString(string(res2B))
+		LogString(string(res2B), "result")
 		//
 		a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
 		p, ok := PersonStruct.FindPersonByToken(m.Token)
@@ -707,7 +714,7 @@ func HandleFunctionArenaResult(w http.ResponseWriter, r *http.Request) {
 		}
 
 		c, err := json.Marshal(mo)
-		LogString(string(c))
+		LogString(string(c), "result")
 		if err != nil {
 			w.Write(c)
 		} else {
@@ -779,6 +786,7 @@ func GoServerListen() {
 	http.HandleFunc("/parry", HandleFunctionParry)
 	http.HandleFunc("/arena/quit", HandleFunctionArenaQuit)
 	http.HandleFunc("/arena/result", HandleFunctionArenaResult)
+	log.Println("Started")
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
