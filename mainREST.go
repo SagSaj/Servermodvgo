@@ -25,5 +25,9 @@ func main() {
 			os.Exit(0)
 			return
 		}
+		if "drop" == guessColor {
+			re.DropBase()
+			return
+		}
 	}
 }

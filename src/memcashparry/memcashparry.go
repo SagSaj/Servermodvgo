@@ -1,10 +1,12 @@
 package memcashparry
 
 import (
-	"PersonStruct"
 	"log"
-	mem "memcash"
+	"strconv"
+
+	//mem "memcash"
 	. "reststruct"
+	t "time"
 )
 
 type Parry struct {
@@ -98,6 +100,9 @@ func GetPending(ID string, IDFrom int) []StructForREST {
 	a := []StructForREST{}
 	p, ok := ParryMems[ID]
 	if ok {
+		if p == nil {
+			return a
+		}
 		for i := 0; i < len(p.Parres); i += 1 {
 			if p.Types[i] == "pending" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
@@ -147,28 +152,29 @@ func IsAddParry(ArenaID string, ToAccountID int, FromAccountID int) bool {
 		return false
 	}
 }
-func VerifyActive(Tocken string, ArenaID string, accountIDTo int, bet float32) {
+func VerifyActive(ArenaID string, accountIDTo int, bet float32) bool {
 	//ok2 := mem.Arena.FindArenaEnd()//Find in Incoming addDoubled
 	p, ok := ParryMems[ArenaID]
 	if ok {
-		a := mem.Arena.FindArena(ArenaID)
-		pers, ok := PersonStruct.FindPersonByToken(Tocken)
+		//a := mem.Arena.FindArena(ArenaID)
 		okas := false
 		for index, value := range p.Types {
-			log.Println(p.Parres[index])
-			if value == "pending" && p.To[index] == accountIDTo {
+			//log.Println(p.Parres[index])
+			if value == "pending" && p.From[index] == accountIDTo {
 				okas = true
 				p.ReplaceADV(p.Parres[index], "active")
 			}
-			if value == "incoming" && p.From[index] == accountIDTo {
+			if value == "incoming" && p.To[index] == accountIDTo {
 				okas = true
 				p.ReplaceADV(p.Parres[index], "active")
 			}
 		}
 		if okas && ok {
-			a.AddNewParry(pers.AccountID, accountIDTo, bet)
+			return true
+			//a.AddNewParry(pers.AccountID, accountIDTo, bet)
 		}
 	}
+	return false
 }
 
 //Ne verno
@@ -176,15 +182,12 @@ func VerifyReject(Tocken string, ArenaID string, accountIDTo int, bet float32) {
 	p, ok := ParryMems[ArenaID]
 	if ok {
 		for index, value := range p.Types {
-			if value == "pending" && p.To[index] == accountIDTo {
-				p.DeleteADVbyIndex(index)
-				VerifyReject(Tocken, ArenaID, accountIDTo, bet)
-				return
+			log.Println(value + " " + strconv.Itoa(p.To[index]) + " " + strconv.Itoa(accountIDTo))
+			if value == "pending" && p.From[index] == accountIDTo {
+				p.ReplaceADV(p.Parres[index], "declined")
 			}
-			if value == "incoming" && p.From[index] == accountIDTo {
-				p.DeleteADVbyIndex(index)
-				VerifyReject(Tocken, ArenaID, accountIDTo, bet)
-				return
+			if value == "incoming" && p.To[index] == accountIDTo {
+				p.ReplaceADV(p.Parres[index], "rejected")
 			}
 		}
 	}
@@ -193,21 +196,56 @@ func VerifyDecline(Tocken string, ArenaID string, accountIDTo int, bet float32) 
 	p, ok := ParryMems[ArenaID]
 	if ok {
 		for index, value := range p.Types {
-			if value == "pending" && p.To[index] == accountIDTo {
-
-				p.DeleteADVbyIndex(index)
-				VerifyDecline(Tocken, ArenaID, accountIDTo, bet)
-				return
+			if value == "pending" && p.From[index] == accountIDTo {
+				p.ReplaceADV(p.Parres[index], "declined")
 
 			}
-			if value == "incoming" && p.From[index] == accountIDTo {
+			if value == "incoming" && p.To[index] == accountIDTo {
+				p.ReplaceADV(p.Parres[index], "rejected")
+			}
+		}
+	}
+}
+func Clear(AccountID int, ArenaID string) {
+	p, ok := ParryMems[ArenaID]
+	if ok {
+		for index, _ := range p.Types {
+			if p.To[index] == AccountID || p.From[index] == AccountID {
 				p.DeleteADVbyIndex(index)
-				VerifyDecline(Tocken, ArenaID, accountIDTo, bet)
+				Clear(AccountID, ArenaID)
 				return
 			}
 		}
 	}
 }
-func DeleteLongTocken() {
 
+//PROBLEMS!!!!
+func DeleteLongTocken() {
+	log.Println("LogMemCashParryStarted")
+	for true {
+
+		t.Sleep(55 * t.Second)
+		log.Println("LogMemCashParry Was " + strconv.Itoa(len(ParryMems)))
+		for index, value := range ParryMems {
+			activeExict := false
+			for index2, value2 := range value.Parres {
+				if value.Types[index2] == "active" {
+					activeExict = true
+					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(20) {
+						delete(ParryMems, index)
+						break
+					}
+				}
+			}
+			if !activeExict {
+				for _, value2 := range value.Parres {
+					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(2) {
+						delete(ParryMems, index)
+						break
+					}
+				}
+			}
+		}
+		log.Println("LogMemCashParry Become " + strconv.Itoa(len(ParryMems)))
+	}
 }

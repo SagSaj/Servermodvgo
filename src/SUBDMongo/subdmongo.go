@@ -13,9 +13,9 @@ import (
 
 //SessionGame Struct of Session
 type SessionGame struct {
-	Login     string
-	Session   string
-	TimeStart int
+	Login     string `bson:"login"`
+	Session   string `bson:"session"`
+	TimeStart int    `bson:"timestart"`
 }
 
 //var session *mgo.Session
@@ -54,7 +54,7 @@ func InsertIntoDatabase(p SessionGame) {
 	//defer session.Close()
 	session := GetMongoSession()
 	defer session.Close()
-	c := session.DB(dBName).C("Sessions")
+	c := session.DB(dBName).C("sessions")
 
 	err = c.Insert(&p)
 	if err != nil {
@@ -69,8 +69,8 @@ func FindBySession(Ses string) []SessionGame {
 	session := GetMongoSession()
 	defer session.Close()
 	result := []SessionGame{}
-	c := session.DB(dBName).C("Sessions")
-	err = c.Find(bson.M{"Session": Ses}).All(&result)
+	c := session.DB(dBName).C("sessions")
+	err = c.Find(bson.M{"session": Ses}).All(&result)
 	if err != nil {
 		log.Println(err)
 	}
@@ -83,8 +83,8 @@ func DeletebyTimeOut(ti float64) {
 	//defer session.Close()
 	session := GetMongoSession()
 	defer session.Close()
-	c := session.DB(dBName).C("Sessions")
-	err = c.Remove(bson.M{"TimeStart": bson.M{"$lte": ti}})
+	c := session.DB(dBName).C("sessions")
+	err = c.Remove(bson.M{"timestart": bson.M{"$lte": ti}})
 	if err != nil {
 		log.Println(err)
 	}
@@ -92,12 +92,12 @@ func DeletebyTimeOut(ti float64) {
 
 //LoginInformation ii
 type LoginInformation struct {
-	Login     string
-	Password  string
-	Balance   float32
-	WinCount  int
-	LoseCount int
-	IDAccount int
+	Login     string  `bson:"login"`
+	Password  string  `bson:"password"`
+	Balance   float32 `bson:"balance"`
+	WinCount  int     `bson:"wincount"`
+	LoseCount int     `bson:"losecount"`
+	IDAccount int     `bson:"idaccount"`
 }
 
 //RegistrNewPerson rnp
@@ -115,7 +115,7 @@ func RegistrNewPerson(login, password string) (LoginInformation, error) {
 		return def, errors.New("Exist")
 	}
 	l := LoginInformation{Login: login, Password: password, Balance: 100, WinCount: 0, LoseCount: 0}
-	c := session.DB(dBName).C("Persons")
+	c := session.DB(dBName).C("persons")
 	err = c.Insert(&l)
 	if err != nil {
 		log.Println("Registr" + err.Error())
@@ -123,22 +123,34 @@ func RegistrNewPerson(login, password string) (LoginInformation, error) {
 	}
 	return l, nil
 }
+func DropBase() {
+	session := GetMongoSession()
+	defer session.Close()
+	c := session.DB(dBName).C("persons")
+	err = c.DropCollection()
+	log.Println("DropCollection")
+}
 func RegistrNewPersonWithID(login, password string, ID int) (LoginInformation, error) {
 	//	initiateSession()
 	//defer session.Close()
 	session := GetMongoSession()
 	defer session.Close()
 	def := LoginInformation{}
+
 	_, b, err := findPerson(login)
 	if err != nil {
+		log.Println(err.Error())
 		return def, err
 	}
 	if b {
+		log.Println("Exist")
 		return def, errors.New("Exist")
 	}
+	log.Println("Add")
 	l := LoginInformation{Login: login, Password: password, Balance: 100, WinCount: 0, LoseCount: 0, IDAccount: ID}
-	c := session.DB(dBName).C("Persons")
+	c := session.DB(dBName).C("persons")
 	err = c.Insert(&l)
+
 	if err != nil {
 		log.Println("Registr" + err.Error())
 		return l, err
@@ -153,7 +165,7 @@ func FindPerson(login, password string) (LoginInformation, error) {
 	session := GetMongoSession()
 	defer session.Close()
 	result0 := LoginInformation{}
-	c := session.DB(dBName).C("Persons")
+	c := session.DB(dBName).C("persons")
 	err = c.Find(bson.M{"login": login, "password": password}).One(&result0)
 	if err != nil {
 		log.Println("FindPerson" + err.Error())
@@ -169,8 +181,8 @@ func findPerson(login string) (LoginInformation, bool, error) {
 	result0 := LoginInformation{}
 	session := GetMongoSession()
 	defer session.Close()
-	c := session.DB(dBName).C("Persons")
-	err = c.Find(bson.M{"login": login}).One(result0)
+	c := session.DB(dBName).C("persons")
+	err = c.Find(bson.M{"login": login}).One(&result0)
 
 	if err != nil {
 		if err.Error() == "not found" {
@@ -185,7 +197,7 @@ func GetBalance(Login string) (bool, float32) {
 	session := GetMongoSession()
 	defer session.Close()
 	result0 := LoginInformation{}
-	c := session.DB(dBName).C("Persons")
+	c := session.DB(dBName).C("persons")
 	err = c.Find(bson.M{"login": Login}).One(&result0)
 	if err != nil {
 		log.Println(err)
@@ -197,7 +209,7 @@ func GetAllPersons() int {
 	session := GetMongoSession()
 	defer session.Close()
 
-	c := session.DB(dBName).C("Persons")
+	c := session.DB(dBName).C("persons")
 	n, err := c.Find(nil).Count()
 	if err != nil {
 		log.Println(err)
@@ -218,8 +230,12 @@ func SetBalanceAndWinCount(login string, balanceChange float32, winCount int, lo
 	result.LoseCount = result.LoseCount + loseCount
 	result.WinCount = result.WinCount + winCount
 	result.Balance = result.Balance + balanceChange
-	c := session.DB(dBName).C("Persons")
-	err = c.Insert(&result)
+
+	//log.Println(result)
+	c := session.DB(dBName).C("persons")
+	//_, err = c.Upsert(bson.M{"Login": login}, bson.M{"$set": bson.M{"LoseCount": result.LoseCount, "WinCount": result.LoseCount, "Balance": result.LoseCount}})
+	err = c.Update(bson.M{"login": login}, bson.M{"$set": bson.M{"losecount": result.LoseCount, "wincount": result.WinCount, "balance": result.Balance}})
+	//log.Println(GetBalance(login))
 	if err != nil {
 		log.Println(err)
 		return err
@@ -236,9 +252,9 @@ func RegistrStats(pric uint64) {
 	//defer session.Close()
 	session := GetMongoSession()
 	defer session.Close()
-	p := Stats{prices: pric}
-	c := session.DB(dBName).C("Stats")
-	err = c.Insert(&p)
+	c := session.DB(dBName).C("stats")
+
+	err = c.Update(bson.M{}, bson.M{"$set": bson.M{"prices": pric}})
 	if err != nil {
 		log.Println("Stats" + err.Error())
 	}

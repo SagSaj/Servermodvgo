@@ -4,6 +4,7 @@ import (
 	"PersonStruct"
 	p "PersonStruct"
 	"log"
+	memp "memcashparry"
 	. "reststruct"
 	"strconv"
 	t "time"
@@ -32,7 +33,8 @@ type ArenaInformation struct {
 }
 
 func (a *ArenaInformation) ArenaInit(ID string) {
-	a.Bets = make(map[int]float32)
+	a.Bets = make(map[int]float32, 2)
+	a.TockenWin = make(map[string]bool, 2)
 	a.IDArena = ID
 	a.DateTimeBeginArena = t.Now()
 	a.IsEndArena = false
@@ -96,6 +98,10 @@ func (a *ArenaInformation) TokenWin(Tocken string) {
 }
 func (a *ArenaInformation) TokenLoseWithoutTeam(Tocken string) {
 
+	_, ok := a.TockenWin[Tocken]
+	if ok {
+		return
+	}
 	a.TockenWin[Tocken] = false
 	i, ok := PersonStruct.FindPersonByToken(Tocken)
 	if ok {
@@ -142,54 +148,58 @@ func (a *ArenaInformation) TeamLose(TockenTeam string) {
 	//change Bets???
 
 }
-func (a *ArenaInformation) GetVictories() ([]StructForREST, bool) {
-	if !a.IsEndArena {
-		return nil, false
-	}
-	arr := []StructForREST{}
-	if a.IsATeamWin {
-		for i := 0; i < len(a.TockenArrayA); i += 1 {
-			id, _ := strconv.Atoi(a.IDArena)
-			id2, _ := strconv.Atoi(a.TockenArrayA[i])
-			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "victory", BetValue: 0}
-			arr = append(arr, p)
-		}
-	} else {
-		for i := 0; i < len(a.TockenArrayB); i += 1 {
-			id, _ := strconv.Atoi(a.IDArena)
-			id2, _ := strconv.Atoi(a.TockenArrayB[i])
-			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "victory", BetValue: 0}
-			arr = append(arr, p)
-		}
-	}
-	return arr, true
-	//change Bets???
 
-}
-func (a *ArenaInformation) GetLoses() ([]StructForREST, bool) {
-	if !a.IsEndArena {
-		return nil, false
-	}
-	arr := []StructForREST{}
-	if !a.IsATeamWin {
-		for i := 0; i < len(a.TockenArrayA); i += 1 {
-			id, _ := strconv.Atoi(a.IDArena)
-			id2, _ := strconv.Atoi(a.TockenArrayA[i])
-			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "victory", BetValue: 0}
-			arr = append(arr, p)
-		}
-	} else {
-		for i := 0; i < len(a.TockenArrayB); i += 1 {
-			id, _ := strconv.Atoi(a.IDArena)
-			id2, _ := strconv.Atoi(a.TockenArrayB[i])
-			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "victory", BetValue: 0}
-			arr = append(arr, p)
-		}
-	}
-	return arr, true
+//???
+// func (a *ArenaInformation) GetVictories() ([]StructForREST, bool) {
+// 	if !a.IsEndArena {
+// 		return nil, false
+// 	}
+// 	arr := []StructForREST{}
+// 	if a.IsATeamWin {
+// 		for i := 0; i < len(a.TockenArrayA); i += 1 {
+// 			id, _ := strconv.Atoi(a.IDArena)
+// 			id2, _ := strconv.Atoi(a.TockenArrayA[i])
+// 			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "victory", BetValue: 0}
+// 			arr = append(arr, p)
+// 		}
+// 	} else {
+// 		for i := 0; i < len(a.TockenArrayB); i += 1 {
+// 			id, _ := strconv.Atoi(a.IDArena)
+// 			id2, _ := strconv.Atoi(a.TockenArrayB[i])
+// 			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "victory", BetValue: 0}
+// 			arr = append(arr, p)
+// 		}
+// 	}
+// 	return arr, true
+// 	//change Bets???
 
-}
-func (a *ArenaInformation) GetVictoriesWithoutTeam() ([]StructForREST, bool) {
+// }
+
+///??
+// func (a *ArenaInformation) GetLoses() ([]StructForREST, bool) {
+// 	if !a.IsEndArena {
+// 		return nil, false
+// 	}
+// 	arr := []StructForREST{}
+// 	if !a.IsATeamWin {
+// 		for i := 0; i < len(a.TockenArrayA); i += 1 {
+// 			id, _ := strconv.Atoi(a.IDArena)
+// 			id2, _ := strconv.Atoi(a.TockenArrayA[i])
+// 			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "victory", BetValue: 0}
+// 			arr = append(arr, p)
+// 		}
+// 	} else {
+// 		for i := 0; i < len(a.TockenArrayB); i += 1 {
+// 			id, _ := strconv.Atoi(a.IDArena)
+// 			id2, _ := strconv.Atoi(a.TockenArrayB[i])
+// 			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "victory", BetValue: 0}
+// 			arr = append(arr, p)
+// 		}
+// 	}
+// 	return arr, true
+
+// }
+func (a *ArenaInformation) GetVictoriesWithoutTeam(Tocken string) ([]StructForREST, bool) {
 	if !a.IsEndArena {
 		return nil, false
 	}
@@ -197,18 +207,21 @@ func (a *ArenaInformation) GetVictoriesWithoutTeam() ([]StructForREST, bool) {
 
 	for index, el := range a.TockenWin {
 		if el {
-			id, _ := strconv.Atoi(a.IDArena)
-			id2, _ := strconv.Atoi(index)
+			if index == Tocken {
+				pers, ok := p.FindPersonByToken(Tocken)
+				if ok {
 
-			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "teamvictory", BetValue: a.Bets[id2]}
-			arr = append(arr, p)
+					arr = memp.GetActive(a.IDArena, pers.AccountID)
+
+				}
+			}
 		}
 	}
 	return arr, true
 	//change Bets???
 
 }
-func (a *ArenaInformation) GetLosesWithoutTeam() ([]StructForREST, bool) {
+func (a *ArenaInformation) GetLosesWithoutTeam(Tocken string) ([]StructForREST, bool) {
 	if !a.IsEndArena {
 		return nil, false
 	}
@@ -216,10 +229,13 @@ func (a *ArenaInformation) GetLosesWithoutTeam() ([]StructForREST, bool) {
 
 	for index, el := range a.TockenWin {
 		if !el {
-			id, _ := strconv.Atoi(a.IDArena)
-			id2, _ := strconv.Atoi(index)
-			p := StructForREST{ArenaID: id, AccountID: id2, ParryType: "teamvictory", BetValue: a.Bets[id2]}
-			arr = append(arr, p)
+			if index == Tocken {
+				pers, ok := p.FindPersonByToken(Tocken)
+				if ok {
+
+					arr = memp.GetActive(a.IDArena, pers.AccountID)
+				}
+			}
 		}
 	}
 	return arr, true
@@ -237,9 +253,13 @@ func init() {
 	go DeleteLongTocken()
 }
 func DeleteLongTocken() {
+	log.Println("LogMemCashStarted")
 	for true {
-		t.Sleep(60 * t.Second)
+
+		t.Sleep(60 * t.Second * 2)
+		log.Println("LogMemCash Was " + strconv.Itoa(len(Arena.Arena)))
 		go Arena.DeleteByTimeout()
+		log.Println("LogMemCash Become " + strconv.Itoa(len(Arena.Arena)))
 	}
 }
 func (a *ArenaService) FindArena(Toc string) *ArenaInformation {
@@ -250,6 +270,16 @@ func (a *ArenaService) FindArena(Toc string) *ArenaInformation {
 		return s
 	}
 	return s
+}
+func (a *ArenaService) FindArenaIDByAccountID(AccountID int) (*ArenaInformation, string) {
+	for index, value := range a.Arena {
+		for _, value2 := range value.Tockens {
+			if value2 == AccountID {
+				return value, index
+			}
+		}
+	}
+	return nil, ""
 }
 func (a *ArenaService) FindArenaEnd(Toc string) (*ArenaInformation, bool) {
 	s, ok := a.Arena[Toc]
@@ -264,6 +294,8 @@ func (a *ArenaService) AddArena(Toc string) *ArenaInformation {
 	a.Arena[Toc] = &ai
 	return &ai
 }
+
+//Logs
 func (a *ArenaService) DeleteByTimeout() {
 	for key, e := range a.Arena {
 		if t.Now().Sub(e.DateTimeBeginArena).Minutes() > float64(2) && e.PossibleToClose {

@@ -5,6 +5,7 @@ import (
 	"generatetoken"
 	"hash/fnv"
 	"log"
+	"strconv"
 	mongo "subdmongo"
 	"time"
 )
@@ -16,7 +17,7 @@ type PersonsBalance struct {
 var ServicePerson map[string]*PersonService
 
 type PersonService struct {
-	PersonInf    Person
+	PersonInf    *Person
 	TimeActivity time.Time
 }
 
@@ -25,13 +26,16 @@ func init() {
 	go DeleteLongTocken()
 }
 func DeleteLongTocken() {
+	log.Println("LogLongTokenStarted")
 	for true {
-		time.Sleep(60 * time.Second)
+		time.Sleep(60 * time.Second * 5)
+		log.Println("LogLongToken Was " + strconv.Itoa(len(ServicePerson)))
 		for key, e := range ServicePerson {
 			if time.Now().Sub(e.TimeActivity).Minutes() > float64(60) {
 				delete(ServicePerson, key)
 			}
 		}
+		log.Println("LogLongToken Become " + strconv.Itoa(len(ServicePerson)))
 	}
 }
 
@@ -52,9 +56,13 @@ func hash(s string) uint32 {
 }
 func generateTocken(login string) string {
 	s, err := generatetoken.GenerateRandomStringURLSafe(8)
+
 	if err != nil {
 		return fmt.Sprint(hash(login))
 	}
+	//log.Println(fmt.Sprint(hash(login)))
+	//учше
+	log.Println(s)
 	return s + fmt.Sprint(hash(login))
 }
 func InsertPerson(login, password string) (Person, error) {
@@ -72,7 +80,7 @@ func InsertPerson(login, password string) (Person, error) {
 	p.LoseCount = l.LoseCount
 	p.AccountID = l.IDAccount
 	p.Tocken = generateTocken(login)
-	ServicePerson[p.Tocken] = &PersonService{PersonInf: p, TimeActivity: time.Now()}
+	ServicePerson[p.Tocken] = &PersonService{PersonInf: &p, TimeActivity: time.Now()}
 	return p, nil
 }
 func InsertPersonWithID(login, password string, ID int) (Person, error) {
@@ -81,6 +89,7 @@ func InsertPersonWithID(login, password string, ID int) (Person, error) {
 	l, err := mongo.RegistrNewPersonWithID(login, password, ID)
 	var p Person
 	if err != nil {
+		log.Println("returnperr")
 		return p, err
 	}
 	p.Login = login
@@ -90,8 +99,11 @@ func InsertPersonWithID(login, password string, ID int) (Person, error) {
 	p.AccountID = l.IDAccount
 	p.LoseCount = l.LoseCount
 	p.Tocken = generateTocken(login)
-	ServicePerson[p.Tocken] = &PersonService{PersonInf: p, TimeActivity: time.Now()}
+	ServicePerson[p.Tocken] = &PersonService{PersonInf: &p, TimeActivity: time.Now()}
 	return p, nil
+}
+func DropBase() {
+	mongo.DropBase()
 }
 func FindPersonByLogin(login, password string) (Person, error) {
 	var p Person
@@ -110,13 +122,13 @@ func FindPersonByLogin(login, password string) (Person, error) {
 	p.AccountID = l.IDAccount
 	p.LoseCount = l.LoseCount
 	p.Tocken = generateTocken(login)
-	ServicePerson[p.Tocken] = &PersonService{PersonInf: p, TimeActivity: time.Now()}
+	ServicePerson[p.Tocken] = &PersonService{PersonInf: &p, TimeActivity: time.Now()}
 	return p, nil
 }
-func FindPersonByToken(Toc string) (Person, bool) {
+func FindPersonByToken(Toc string) (*Person, bool) {
 	p, ok := ServicePerson[Toc]
 	if !ok {
-		return Person{}, false
+		return &Person{}, false
 	}
 	ServicePerson[Toc] = &PersonService{PersonInf: p.PersonInf, TimeActivity: time.Now()}
 	return p.PersonInf, true
@@ -130,6 +142,7 @@ func WinMatch(Token string, bet float32) {
 		p.Balance = p.Balance + bet
 		p.WinCount += 1
 		mongo.SetBalanceAndWinCount(p.Login, bet, 1, 0)
+		log.Println("Balance changed ")
 	} else {
 		log.Println("Tocken " + Token + " didn't find in MatchResult")
 	}
@@ -144,6 +157,7 @@ func LoseMatch(Token string, bet float32) {
 		p.Balance = p.Balance - bet
 		p.LoseCount += 1
 		mongo.SetBalanceAndWinCount(p.Login, -bet, 0, 1)
+		log.Println("Balance changed ")
 	} else {
 		log.Println("Tocken " + Token + " didn't find in MatchResult")
 	}
