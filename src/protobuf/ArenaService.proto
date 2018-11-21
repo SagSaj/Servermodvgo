@@ -22,17 +22,26 @@ service Arena {
   rpc SayBalance (BalanceRequest) returns (BalanceReply) {}
   rpc LogIn (LoginRequest) returns (LoginReply) {}
   rpc ArenaInitiate (ArenaInitiateRequest) returns (ArenaFindReply) {}
+  rpc ArenaAddParry (ArenaAddParryRequest) returns (ParryReply) {}
   rpc ArenaFind (ArenaFindRequest) returns (ArenaFindReply) {}
   rpc ArenaResult (ArenaResultRequest) returns (ArenaResultReply) {}
+  rpc News (BalanceRequest) returns (NewsReply) {}
 }
-
+ enum ArenaMessageOut{
+      GOOD=0;
+      BADMESSAGE=1;
+      COLLIZION=2;
+  } 
 message BalanceRequest {
-  string name = 1;
+  string tockenID =1;
 }
 
 message BalanceReply {
   string name = 1;
   float balance =2;
+}
+message NewsReply {
+  repeated string NewsAlias=1; 
 }
 message LoginRequest {
   string name =1;
@@ -41,6 +50,7 @@ message LoginRequest {
 message LoginReply{
   string tockenID =1;
   string name =2;
+  float balance =3;
 }
 message ArenaInitiateRequest{
   string tockenID=1;
@@ -48,12 +58,30 @@ message ArenaInitiateRequest{
   string teamTocken =3;
   string Nick =4;
 }
+message ArenaAddParryRequest{
+  int32 IDParry=1;
+    string tockenArena=2;
+    string tockenID=3;
+    string teamTocken =4;
+    string Nick =5;
+    string ToName =6;
+    float Bet=7;
+     enum ParryTypeAnswer{
+      ADDPARRY=0;
+      APPLYPARRY=1;
+      DELETEPARRY=2;
+  } 
+}
+message ParryReply{
+    ArenaMessageOut m =1;
+}
 message ArenaFindRequest{
     string tockenArena=1;
     string teamTocken =2;
 }
 message ArenaFindReply{
   repeated string NamesAlias=1; 
+  repeated float BetAlias=2; 
 }
 message ArenaResultRequest{
   string tockenID=1;
@@ -62,10 +90,5 @@ message ArenaResultRequest{
   string Nick =4;
 }
 message ArenaResultReply{
-  enum ArenaMessageOut{
-      GOOD=0;
-      BADMESSAGE=1;
-      COLLIZION=2;
-  } 
   ArenaMessageOut MessageOut=1;
 }

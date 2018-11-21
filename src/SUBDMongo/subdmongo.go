@@ -6,6 +6,7 @@ import (
 
 	"errors"
 	"log"
+	"os"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -40,7 +41,11 @@ var mgoSession *mgo.Session
 func GetMongoSession() *mgo.Session {
 	if mgoSession == nil {
 		var err error
-		mgoSession, err = mgo.Dial("127.0.0.1")
+		s := os.Getenv("MONGODB_URI")
+		if s == "" {
+			s = "127.0.0.1"
+		}
+		mgoSession, err = mgo.Dial(s)
 		if err != nil {
 			log.Fatal("Failed to start the Mongo session")
 		}

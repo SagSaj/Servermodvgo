@@ -1,3 +1,4 @@
 #!/bin/bash      
 
- export GOPATH=/Users/Stas/Dropbox/goRPC
+export GOPATH=/Users/Stas/Dropbox/goRPC
+export GOROOT=/Users/Stas/Dropbox/goRPC

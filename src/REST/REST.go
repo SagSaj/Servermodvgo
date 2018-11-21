@@ -317,7 +317,7 @@ func HandleFunctionGetMod(w http.ResponseWriter, r *http.Request) {
 	Параметры от клиента: нет
 	Ответ сервера: файл модификации в бинарном формате.
 	*/
-	data, err := ios.ReadFile("Историяразм.psd")
+	data, err := ios.ReadFile("Dueler.zip")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -482,6 +482,18 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 		massR := memp.GetRejected(strconv.Itoa(m.ArenaID), p.AccountID)
 		massD := memp.GetDeclined(strconv.Itoa(m.ArenaID), p.AccountID)
 		//
+		if len(massP) > 0 {
+			if time.Now().Sub(massP[0].CreatedAt).Minutes() > float64(2) {
+				massP = nil
+
+			}
+
+		}
+		if len(massI) > 0 {
+			if time.Now().Sub(massI[0].CreatedAt).Minutes() > float64(2) {
+				massI = nil
+			}
+		}
 		a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
 		if a == nil {
 			http.Error(w, "Arena didn't find", 402)
@@ -606,6 +618,8 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 				massI := memp.GetIncoming(are, p.AccountID)
 				if len(massI) == 0 {
 					log.Println("Can't find parry")
+					log.Println(are)
+					log.Println(p.AccountID)
 					http.Error(w, "Can't find parry", 400)
 					return
 				}
@@ -925,9 +939,9 @@ func GoServerListen() {
 	http.HandleFunc("/StatsAllPersons/", HandleFunctionStatAllPerson)       //tested
 	http.HandleFunc("/StatsActivePersons/", HandleFunctionStatActivePerson) //tested
 	http.HandleFunc("/StatAllBets/", HandleFunctionStatAllBets)             //tested
-	http.HandleFunc("/wotmod/", HandleFunctionGetMod)                       //tested
-	http.HandleFunc("/account/login/", HandleFunctionLogin)                 //tested
-	http.HandleFunc("/account/register/", HandleFunctionRegistration)       //tested
+	http.HandleFunc("/wotmod/", HandleFunctionGetMod)
+	http.HandleFunc("/account/login/", HandleFunctionLogin)
+	http.HandleFunc("/account/register/", HandleFunctionRegistration)
 	////account/register/
 	http.HandleFunc("/balance/", HandleFunctionBalance)
 	//

@@ -221,11 +221,16 @@ func Clear(AccountID int, ArenaID string) {
 
 //PROBLEMS!!!!
 func DeleteLongTocken() {
-	log.Println("LogMemCashParryStarted")
+	i := 0
 	for true {
 
 		t.Sleep(55 * t.Second)
-		log.Println("LogMemCashParry Was " + strconv.Itoa(len(ParryMems)))
+
+		if i != len(ParryMems) {
+			log.Println("LogMemCashParry " + strconv.Itoa(len(ParryMems)))
+			i = len(ParryMems)
+		}
+
 		for index, value := range ParryMems {
 			activeExict := false
 			for index2, value2 := range value.Parres {
@@ -239,13 +244,12 @@ func DeleteLongTocken() {
 			}
 			if !activeExict {
 				for _, value2 := range value.Parres {
-					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(2) {
+					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(20) {
 						delete(ParryMems, index)
 						break
 					}
 				}
 			}
 		}
-		log.Println("LogMemCashParry Become " + strconv.Itoa(len(ParryMems)))
 	}
 }

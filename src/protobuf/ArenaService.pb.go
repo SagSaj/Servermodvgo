@@ -3,13 +3,12 @@
 
 package protobuf
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
-
 import (
-	context "golang.org/x/net/context"
+	context "context"
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -23,34 +22,64 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-type ArenaResultReply_ArenaMessageOut int32
+type ArenaMessageOut int32
 
 const (
-	ArenaResultReply_GOOD       ArenaResultReply_ArenaMessageOut = 0
-	ArenaResultReply_BADMESSAGE ArenaResultReply_ArenaMessageOut = 1
-	ArenaResultReply_COLLIZION  ArenaResultReply_ArenaMessageOut = 2
+	ArenaMessageOut_GOOD       ArenaMessageOut = 0
+	ArenaMessageOut_BADMESSAGE ArenaMessageOut = 1
+	ArenaMessageOut_COLLIZION  ArenaMessageOut = 2
 )
 
-var ArenaResultReply_ArenaMessageOut_name = map[int32]string{
+var ArenaMessageOut_name = map[int32]string{
 	0: "GOOD",
 	1: "BADMESSAGE",
 	2: "COLLIZION",
 }
-var ArenaResultReply_ArenaMessageOut_value = map[string]int32{
+
+var ArenaMessageOut_value = map[string]int32{
 	"GOOD":       0,
 	"BADMESSAGE": 1,
 	"COLLIZION":  2,
 }
 
-func (x ArenaResultReply_ArenaMessageOut) String() string {
-	return proto.EnumName(ArenaResultReply_ArenaMessageOut_name, int32(x))
+func (x ArenaMessageOut) String() string {
+	return proto.EnumName(ArenaMessageOut_name, int32(x))
 }
-func (ArenaResultReply_ArenaMessageOut) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{8, 0}
+
+func (ArenaMessageOut) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_d1c4000fedf88d93, []int{0}
+}
+
+type ArenaAddParryRequest_ParryTypeAnswer int32
+
+const (
+	ArenaAddParryRequest_ADDPARRY    ArenaAddParryRequest_ParryTypeAnswer = 0
+	ArenaAddParryRequest_APPLYPARRY  ArenaAddParryRequest_ParryTypeAnswer = 1
+	ArenaAddParryRequest_DELETEPARRY ArenaAddParryRequest_ParryTypeAnswer = 2
+)
+
+var ArenaAddParryRequest_ParryTypeAnswer_name = map[int32]string{
+	0: "ADDPARRY",
+	1: "APPLYPARRY",
+	2: "DELETEPARRY",
+}
+
+var ArenaAddParryRequest_ParryTypeAnswer_value = map[string]int32{
+	"ADDPARRY":    0,
+	"APPLYPARRY":  1,
+	"DELETEPARRY": 2,
+}
+
+func (x ArenaAddParryRequest_ParryTypeAnswer) String() string {
+	return proto.EnumName(ArenaAddParryRequest_ParryTypeAnswer_name, int32(x))
+}
+
+func (ArenaAddParryRequest_ParryTypeAnswer) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_d1c4000fedf88d93, []int{6, 0}
 }
 
 type BalanceRequest struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	TockenID             string   `protobuf:"bytes,1,opt,name=tockenID,proto3" json:"tockenID,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -60,16 +89,17 @@ func (m *BalanceRequest) Reset()         { *m = BalanceRequest{} }
 func (m *BalanceRequest) String() string { return proto.CompactTextString(m) }
 func (*BalanceRequest) ProtoMessage()    {}
 func (*BalanceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{0}
+	return fileDescriptor_d1c4000fedf88d93, []int{0}
 }
+
 func (m *BalanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BalanceRequest.Unmarshal(m, b)
 }
 func (m *BalanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BalanceRequest.Marshal(b, m, deterministic)
 }
-func (dst *BalanceRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BalanceRequest.Merge(dst, src)
+func (m *BalanceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BalanceRequest.Merge(m, src)
 }
 func (m *BalanceRequest) XXX_Size() int {
 	return xxx_messageInfo_BalanceRequest.Size(m)
@@ -80,9 +110,9 @@ func (m *BalanceRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_BalanceRequest proto.InternalMessageInfo
 
-func (m *BalanceRequest) GetName() string {
+func (m *BalanceRequest) GetTockenID() string {
 	if m != nil {
-		return m.Name
+		return m.TockenID
 	}
 	return ""
 }
@@ -99,16 +129,17 @@ func (m *BalanceReply) Reset()         { *m = BalanceReply{} }
 func (m *BalanceReply) String() string { return proto.CompactTextString(m) }
 func (*BalanceReply) ProtoMessage()    {}
 func (*BalanceReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{1}
+	return fileDescriptor_d1c4000fedf88d93, []int{1}
 }
+
 func (m *BalanceReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BalanceReply.Unmarshal(m, b)
 }
 func (m *BalanceReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BalanceReply.Marshal(b, m, deterministic)
 }
-func (dst *BalanceReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BalanceReply.Merge(dst, src)
+func (m *BalanceReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BalanceReply.Merge(m, src)
 }
 func (m *BalanceReply) XXX_Size() int {
 	return xxx_messageInfo_BalanceReply.Size(m)
@@ -133,6 +164,45 @@ func (m *BalanceReply) GetBalance() float32 {
 	return 0
 }
 
+type NewsReply struct {
+	NewsAlias            []string `protobuf:"bytes,1,rep,name=NewsAlias,proto3" json:"NewsAlias,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *NewsReply) Reset()         { *m = NewsReply{} }
+func (m *NewsReply) String() string { return proto.CompactTextString(m) }
+func (*NewsReply) ProtoMessage()    {}
+func (*NewsReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d1c4000fedf88d93, []int{2}
+}
+
+func (m *NewsReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NewsReply.Unmarshal(m, b)
+}
+func (m *NewsReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NewsReply.Marshal(b, m, deterministic)
+}
+func (m *NewsReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewsReply.Merge(m, src)
+}
+func (m *NewsReply) XXX_Size() int {
+	return xxx_messageInfo_NewsReply.Size(m)
+}
+func (m *NewsReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_NewsReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NewsReply proto.InternalMessageInfo
+
+func (m *NewsReply) GetNewsAlias() []string {
+	if m != nil {
+		return m.NewsAlias
+	}
+	return nil
+}
+
 type LoginRequest struct {
 	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Password             string   `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
@@ -145,16 +215,17 @@ func (m *LoginRequest) Reset()         { *m = LoginRequest{} }
 func (m *LoginRequest) String() string { return proto.CompactTextString(m) }
 func (*LoginRequest) ProtoMessage()    {}
 func (*LoginRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{2}
+	return fileDescriptor_d1c4000fedf88d93, []int{3}
 }
+
 func (m *LoginRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LoginRequest.Unmarshal(m, b)
 }
 func (m *LoginRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_LoginRequest.Marshal(b, m, deterministic)
 }
-func (dst *LoginRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LoginRequest.Merge(dst, src)
+func (m *LoginRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LoginRequest.Merge(m, src)
 }
 func (m *LoginRequest) XXX_Size() int {
 	return xxx_messageInfo_LoginRequest.Size(m)
@@ -182,6 +253,7 @@ func (m *LoginRequest) GetPassword() string {
 type LoginReply struct {
 	TockenID             string   `protobuf:"bytes,1,opt,name=tockenID,proto3" json:"tockenID,omitempty"`
 	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Balance              float32  `protobuf:"fixed32,3,opt,name=balance,proto3" json:"balance,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -191,16 +263,17 @@ func (m *LoginReply) Reset()         { *m = LoginReply{} }
 func (m *LoginReply) String() string { return proto.CompactTextString(m) }
 func (*LoginReply) ProtoMessage()    {}
 func (*LoginReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{3}
+	return fileDescriptor_d1c4000fedf88d93, []int{4}
 }
+
 func (m *LoginReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LoginReply.Unmarshal(m, b)
 }
 func (m *LoginReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_LoginReply.Marshal(b, m, deterministic)
 }
-func (dst *LoginReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LoginReply.Merge(dst, src)
+func (m *LoginReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LoginReply.Merge(m, src)
 }
 func (m *LoginReply) XXX_Size() int {
 	return xxx_messageInfo_LoginReply.Size(m)
@@ -225,6 +298,13 @@ func (m *LoginReply) GetName() string {
 	return ""
 }
 
+func (m *LoginReply) GetBalance() float32 {
+	if m != nil {
+		return m.Balance
+	}
+	return 0
+}
+
 type ArenaInitiateRequest struct {
 	TockenID             string   `protobuf:"bytes,1,opt,name=tockenID,proto3" json:"tockenID,omitempty"`
 	TockenArena          string   `protobuf:"bytes,2,opt,name=tockenArena,proto3" json:"tockenArena,omitempty"`
@@ -239,16 +319,17 @@ func (m *ArenaInitiateRequest) Reset()         { *m = ArenaInitiateRequest{} }
 func (m *ArenaInitiateRequest) String() string { return proto.CompactTextString(m) }
 func (*ArenaInitiateRequest) ProtoMessage()    {}
 func (*ArenaInitiateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{4}
+	return fileDescriptor_d1c4000fedf88d93, []int{5}
 }
+
 func (m *ArenaInitiateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ArenaInitiateRequest.Unmarshal(m, b)
 }
 func (m *ArenaInitiateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ArenaInitiateRequest.Marshal(b, m, deterministic)
 }
-func (dst *ArenaInitiateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ArenaInitiateRequest.Merge(dst, src)
+func (m *ArenaInitiateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ArenaInitiateRequest.Merge(m, src)
 }
 func (m *ArenaInitiateRequest) XXX_Size() int {
 	return xxx_messageInfo_ArenaInitiateRequest.Size(m)
@@ -287,6 +368,132 @@ func (m *ArenaInitiateRequest) GetNick() string {
 	return ""
 }
 
+type ArenaAddParryRequest struct {
+	IDParry              int32    `protobuf:"varint,1,opt,name=IDParry,proto3" json:"IDParry,omitempty"`
+	TockenArena          string   `protobuf:"bytes,2,opt,name=tockenArena,proto3" json:"tockenArena,omitempty"`
+	TockenID             string   `protobuf:"bytes,3,opt,name=tockenID,proto3" json:"tockenID,omitempty"`
+	TeamTocken           string   `protobuf:"bytes,4,opt,name=teamTocken,proto3" json:"teamTocken,omitempty"`
+	Nick                 string   `protobuf:"bytes,5,opt,name=Nick,proto3" json:"Nick,omitempty"`
+	ToName               string   `protobuf:"bytes,6,opt,name=ToName,proto3" json:"ToName,omitempty"`
+	Bet                  float32  `protobuf:"fixed32,7,opt,name=Bet,proto3" json:"Bet,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ArenaAddParryRequest) Reset()         { *m = ArenaAddParryRequest{} }
+func (m *ArenaAddParryRequest) String() string { return proto.CompactTextString(m) }
+func (*ArenaAddParryRequest) ProtoMessage()    {}
+func (*ArenaAddParryRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d1c4000fedf88d93, []int{6}
+}
+
+func (m *ArenaAddParryRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ArenaAddParryRequest.Unmarshal(m, b)
+}
+func (m *ArenaAddParryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ArenaAddParryRequest.Marshal(b, m, deterministic)
+}
+func (m *ArenaAddParryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ArenaAddParryRequest.Merge(m, src)
+}
+func (m *ArenaAddParryRequest) XXX_Size() int {
+	return xxx_messageInfo_ArenaAddParryRequest.Size(m)
+}
+func (m *ArenaAddParryRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ArenaAddParryRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ArenaAddParryRequest proto.InternalMessageInfo
+
+func (m *ArenaAddParryRequest) GetIDParry() int32 {
+	if m != nil {
+		return m.IDParry
+	}
+	return 0
+}
+
+func (m *ArenaAddParryRequest) GetTockenArena() string {
+	if m != nil {
+		return m.TockenArena
+	}
+	return ""
+}
+
+func (m *ArenaAddParryRequest) GetTockenID() string {
+	if m != nil {
+		return m.TockenID
+	}
+	return ""
+}
+
+func (m *ArenaAddParryRequest) GetTeamTocken() string {
+	if m != nil {
+		return m.TeamTocken
+	}
+	return ""
+}
+
+func (m *ArenaAddParryRequest) GetNick() string {
+	if m != nil {
+		return m.Nick
+	}
+	return ""
+}
+
+func (m *ArenaAddParryRequest) GetToName() string {
+	if m != nil {
+		return m.ToName
+	}
+	return ""
+}
+
+func (m *ArenaAddParryRequest) GetBet() float32 {
+	if m != nil {
+		return m.Bet
+	}
+	return 0
+}
+
+type ParryReply struct {
+	M                    ArenaMessageOut `protobuf:"varint,1,opt,name=m,proto3,enum=protobuf.ArenaMessageOut" json:"m,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
+}
+
+func (m *ParryReply) Reset()         { *m = ParryReply{} }
+func (m *ParryReply) String() string { return proto.CompactTextString(m) }
+func (*ParryReply) ProtoMessage()    {}
+func (*ParryReply) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d1c4000fedf88d93, []int{7}
+}
+
+func (m *ParryReply) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ParryReply.Unmarshal(m, b)
+}
+func (m *ParryReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ParryReply.Marshal(b, m, deterministic)
+}
+func (m *ParryReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ParryReply.Merge(m, src)
+}
+func (m *ParryReply) XXX_Size() int {
+	return xxx_messageInfo_ParryReply.Size(m)
+}
+func (m *ParryReply) XXX_DiscardUnknown() {
+	xxx_messageInfo_ParryReply.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ParryReply proto.InternalMessageInfo
+
+func (m *ParryReply) GetM() ArenaMessageOut {
+	if m != nil {
+		return m.M
+	}
+	return ArenaMessageOut_GOOD
+}
+
 type ArenaFindRequest struct {
 	TockenArena          string   `protobuf:"bytes,1,opt,name=tockenArena,proto3" json:"tockenArena,omitempty"`
 	TeamTocken           string   `protobuf:"bytes,2,opt,name=teamTocken,proto3" json:"teamTocken,omitempty"`
@@ -299,16 +506,17 @@ func (m *ArenaFindRequest) Reset()         { *m = ArenaFindRequest{} }
 func (m *ArenaFindRequest) String() string { return proto.CompactTextString(m) }
 func (*ArenaFindRequest) ProtoMessage()    {}
 func (*ArenaFindRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{5}
+	return fileDescriptor_d1c4000fedf88d93, []int{8}
 }
+
 func (m *ArenaFindRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ArenaFindRequest.Unmarshal(m, b)
 }
 func (m *ArenaFindRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ArenaFindRequest.Marshal(b, m, deterministic)
 }
-func (dst *ArenaFindRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ArenaFindRequest.Merge(dst, src)
+func (m *ArenaFindRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ArenaFindRequest.Merge(m, src)
 }
 func (m *ArenaFindRequest) XXX_Size() int {
 	return xxx_messageInfo_ArenaFindRequest.Size(m)
@@ -334,26 +542,28 @@ func (m *ArenaFindRequest) GetTeamTocken() string {
 }
 
 type ArenaFindReply struct {
-	NamesAlias           []string `protobuf:"bytes,1,rep,name=NamesAlias,proto3" json:"NamesAlias,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	NamesAlias           []string  `protobuf:"bytes,1,rep,name=NamesAlias,proto3" json:"NamesAlias,omitempty"`
+	BetAlias             []float32 `protobuf:"fixed32,2,rep,packed,name=BetAlias,proto3" json:"BetAlias,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
 }
 
 func (m *ArenaFindReply) Reset()         { *m = ArenaFindReply{} }
 func (m *ArenaFindReply) String() string { return proto.CompactTextString(m) }
 func (*ArenaFindReply) ProtoMessage()    {}
 func (*ArenaFindReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{6}
+	return fileDescriptor_d1c4000fedf88d93, []int{9}
 }
+
 func (m *ArenaFindReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ArenaFindReply.Unmarshal(m, b)
 }
 func (m *ArenaFindReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ArenaFindReply.Marshal(b, m, deterministic)
 }
-func (dst *ArenaFindReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ArenaFindReply.Merge(dst, src)
+func (m *ArenaFindReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ArenaFindReply.Merge(m, src)
 }
 func (m *ArenaFindReply) XXX_Size() int {
 	return xxx_messageInfo_ArenaFindReply.Size(m)
@@ -367,6 +577,13 @@ var xxx_messageInfo_ArenaFindReply proto.InternalMessageInfo
 func (m *ArenaFindReply) GetNamesAlias() []string {
 	if m != nil {
 		return m.NamesAlias
+	}
+	return nil
+}
+
+func (m *ArenaFindReply) GetBetAlias() []float32 {
+	if m != nil {
+		return m.BetAlias
 	}
 	return nil
 }
@@ -385,16 +602,17 @@ func (m *ArenaResultRequest) Reset()         { *m = ArenaResultRequest{} }
 func (m *ArenaResultRequest) String() string { return proto.CompactTextString(m) }
 func (*ArenaResultRequest) ProtoMessage()    {}
 func (*ArenaResultRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{7}
+	return fileDescriptor_d1c4000fedf88d93, []int{10}
 }
+
 func (m *ArenaResultRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ArenaResultRequest.Unmarshal(m, b)
 }
 func (m *ArenaResultRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ArenaResultRequest.Marshal(b, m, deterministic)
 }
-func (dst *ArenaResultRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ArenaResultRequest.Merge(dst, src)
+func (m *ArenaResultRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ArenaResultRequest.Merge(m, src)
 }
 func (m *ArenaResultRequest) XXX_Size() int {
 	return xxx_messageInfo_ArenaResultRequest.Size(m)
@@ -434,26 +652,27 @@ func (m *ArenaResultRequest) GetNick() string {
 }
 
 type ArenaResultReply struct {
-	MessageOut           ArenaResultReply_ArenaMessageOut `protobuf:"varint,1,opt,name=MessageOut,proto3,enum=protobuf.ArenaResultReply_ArenaMessageOut" json:"MessageOut,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                         `json:"-"`
-	XXX_unrecognized     []byte                           `json:"-"`
-	XXX_sizecache        int32                            `json:"-"`
+	MessageOut           ArenaMessageOut `protobuf:"varint,1,opt,name=MessageOut,proto3,enum=protobuf.ArenaMessageOut" json:"MessageOut,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
 }
 
 func (m *ArenaResultReply) Reset()         { *m = ArenaResultReply{} }
 func (m *ArenaResultReply) String() string { return proto.CompactTextString(m) }
 func (*ArenaResultReply) ProtoMessage()    {}
 func (*ArenaResultReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ArenaService_84be1f0c08eac87c, []int{8}
+	return fileDescriptor_d1c4000fedf88d93, []int{11}
 }
+
 func (m *ArenaResultReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ArenaResultReply.Unmarshal(m, b)
 }
 func (m *ArenaResultReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ArenaResultReply.Marshal(b, m, deterministic)
 }
-func (dst *ArenaResultReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ArenaResultReply.Merge(dst, src)
+func (m *ArenaResultReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ArenaResultReply.Merge(m, src)
 }
 func (m *ArenaResultReply) XXX_Size() int {
 	return xxx_messageInfo_ArenaResultReply.Size(m)
@@ -464,24 +683,75 @@ func (m *ArenaResultReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ArenaResultReply proto.InternalMessageInfo
 
-func (m *ArenaResultReply) GetMessageOut() ArenaResultReply_ArenaMessageOut {
+func (m *ArenaResultReply) GetMessageOut() ArenaMessageOut {
 	if m != nil {
 		return m.MessageOut
 	}
-	return ArenaResultReply_GOOD
+	return ArenaMessageOut_GOOD
 }
 
 func init() {
+	proto.RegisterEnum("protobuf.ArenaMessageOut", ArenaMessageOut_name, ArenaMessageOut_value)
+	proto.RegisterEnum("protobuf.ArenaAddParryRequest_ParryTypeAnswer", ArenaAddParryRequest_ParryTypeAnswer_name, ArenaAddParryRequest_ParryTypeAnswer_value)
 	proto.RegisterType((*BalanceRequest)(nil), "protobuf.BalanceRequest")
 	proto.RegisterType((*BalanceReply)(nil), "protobuf.BalanceReply")
+	proto.RegisterType((*NewsReply)(nil), "protobuf.NewsReply")
 	proto.RegisterType((*LoginRequest)(nil), "protobuf.LoginRequest")
 	proto.RegisterType((*LoginReply)(nil), "protobuf.LoginReply")
 	proto.RegisterType((*ArenaInitiateRequest)(nil), "protobuf.ArenaInitiateRequest")
+	proto.RegisterType((*ArenaAddParryRequest)(nil), "protobuf.ArenaAddParryRequest")
+	proto.RegisterType((*ParryReply)(nil), "protobuf.ParryReply")
 	proto.RegisterType((*ArenaFindRequest)(nil), "protobuf.ArenaFindRequest")
 	proto.RegisterType((*ArenaFindReply)(nil), "protobuf.ArenaFindReply")
 	proto.RegisterType((*ArenaResultRequest)(nil), "protobuf.ArenaResultRequest")
 	proto.RegisterType((*ArenaResultReply)(nil), "protobuf.ArenaResultReply")
-	proto.RegisterEnum("protobuf.ArenaResultReply_ArenaMessageOut", ArenaResultReply_ArenaMessageOut_name, ArenaResultReply_ArenaMessageOut_value)
+}
+
+func init() { proto.RegisterFile("ArenaService.proto", fileDescriptor_d1c4000fedf88d93) }
+
+var fileDescriptor_d1c4000fedf88d93 = []byte{
+	// 648 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x55, 0x4d, 0x6f, 0xda, 0x40,
+	0x10, 0xc5, 0x36, 0x24, 0x78, 0x20, 0x80, 0xb6, 0x51, 0xe4, 0x5a, 0x11, 0x42, 0x7b, 0x29, 0xad,
+	0x2a, 0x0e, 0xa9, 0xaa, 0xaa, 0x55, 0x55, 0xc5, 0xc4, 0x14, 0x59, 0x35, 0x1f, 0x5a, 0x50, 0xa5,
+	0xf4, 0x66, 0x60, 0x8b, 0xac, 0x80, 0x4d, 0x6d, 0x53, 0xc4, 0x1f, 0xa8, 0x7a, 0xea, 0x7f, 0xec,
+	0x3f, 0xa9, 0xbc, 0xfe, 0x76, 0x48, 0xc8, 0xad, 0x27, 0x76, 0xde, 0xce, 0xee, 0xbc, 0xf7, 0x76,
+	0x3c, 0x00, 0x52, 0x1c, 0x6a, 0x19, 0x13, 0xea, 0xfc, 0x34, 0xe7, 0xb4, 0xb3, 0x71, 0x6c, 0xcf,
+	0x46, 0x65, 0xf6, 0x33, 0xdb, 0x7e, 0xc7, 0xaf, 0xa1, 0xd6, 0x35, 0x56, 0x86, 0x35, 0xa7, 0x84,
+	0xfe, 0xd8, 0x52, 0xd7, 0x43, 0x32, 0x94, 0x3d, 0x7b, 0x7e, 0x47, 0x2d, 0x4d, 0x95, 0xb8, 0x16,
+	0xd7, 0x16, 0x49, 0x1c, 0xe3, 0x8f, 0x50, 0x8d, 0xb3, 0x37, 0xab, 0x3d, 0x42, 0x50, 0xb4, 0x8c,
+	0x35, 0x0d, 0xf3, 0xd8, 0x1a, 0x49, 0x70, 0x3a, 0x0b, 0x72, 0x24, 0xbe, 0xc5, 0xb5, 0x79, 0x12,
+	0x85, 0xf8, 0x25, 0x88, 0x43, 0xba, 0x73, 0x83, 0xa3, 0x97, 0x41, 0xa0, 0xac, 0x4c, 0xc3, 0x95,
+	0xb8, 0x96, 0xd0, 0x16, 0x49, 0x02, 0xe0, 0x4f, 0x50, 0xd5, 0xed, 0xa5, 0x69, 0x45, 0xa4, 0x0e,
+	0x15, 0x92, 0xa1, 0xbc, 0x31, 0x5c, 0x77, 0x67, 0x3b, 0x0b, 0x56, 0x49, 0x24, 0x71, 0x8c, 0xbf,
+	0x02, 0x84, 0xe7, 0xfd, 0x5a, 0x8f, 0x48, 0x8a, 0x6f, 0xe6, 0x0f, 0x4b, 0x10, 0xb2, 0x12, 0x7e,
+	0x73, 0x70, 0xce, 0xfc, 0xd4, 0x2c, 0xd3, 0x33, 0x0d, 0xef, 0x29, 0xae, 0xa1, 0x16, 0x54, 0x82,
+	0x35, 0x3b, 0x19, 0x56, 0x4a, 0x43, 0xa8, 0x09, 0xe0, 0x51, 0x63, 0x3d, 0x65, 0x10, 0xab, 0x29,
+	0x92, 0x14, 0xe2, 0x93, 0x1c, 0x9a, 0xf3, 0x3b, 0xa9, 0x18, 0x90, 0xf4, 0xd7, 0xf8, 0x0f, 0x1f,
+	0x52, 0x51, 0x16, 0x8b, 0xb1, 0xe1, 0x38, 0xfb, 0x88, 0x8a, 0x04, 0xa7, 0x9a, 0xca, 0x10, 0xc6,
+	0xa4, 0x44, 0xa2, 0xf0, 0x09, 0x44, 0xd2, 0x32, 0x84, 0x9c, 0x8c, 0x2c, 0xc9, 0xe2, 0x83, 0x24,
+	0x4b, 0x09, 0x49, 0x74, 0x01, 0x27, 0x53, 0x7b, 0xe8, 0xfb, 0x7b, 0xc2, 0xd0, 0x30, 0x42, 0x0d,
+	0x10, 0xba, 0xd4, 0x93, 0x4e, 0x99, 0xbb, 0xfe, 0x12, 0x5f, 0x43, 0x9d, 0x91, 0x9c, 0xee, 0x37,
+	0x54, 0xb1, 0xdc, 0x1d, 0x75, 0x50, 0x15, 0xca, 0x8a, 0xaa, 0x8e, 0x15, 0x42, 0x6e, 0x1b, 0x05,
+	0x54, 0x03, 0x50, 0xc6, 0x63, 0xfd, 0x36, 0x88, 0x39, 0x54, 0x87, 0x8a, 0xda, 0xd3, 0x7b, 0xd3,
+	0x5e, 0x00, 0xf0, 0xf8, 0x2d, 0x40, 0xe8, 0x83, 0xff, 0xe6, 0x2f, 0x80, 0x5b, 0x33, 0xfd, 0xb5,
+	0xab, 0xe7, 0x9d, 0xa8, 0xdd, 0x3b, 0x4c, 0xe5, 0x80, 0xba, 0xae, 0xb1, 0xa4, 0xa3, 0xad, 0x47,
+	0xb8, 0x35, 0x9e, 0x42, 0x83, 0xa1, 0x9f, 0x4d, 0x6b, 0x11, 0x59, 0x98, 0x33, 0x8a, 0x3b, 0xf6,
+	0x62, 0x7c, 0xde, 0x0c, 0xac, 0x43, 0x2d, 0x75, 0xab, 0x4f, 0xa8, 0x09, 0xe0, 0x4b, 0xcf, 0x74,
+	0x7c, 0x0a, 0xf1, 0xad, 0xef, 0x52, 0x2f, 0xd8, 0xe5, 0x5b, 0x42, 0x9b, 0x27, 0x71, 0x8c, 0x7f,
+	0x71, 0xe1, 0x67, 0x4c, 0xa8, 0xbb, 0x5d, 0x79, 0xff, 0xaf, 0xe9, 0x06, 0xa1, 0x59, 0x11, 0x0f,
+	0x5f, 0xd8, 0x7b, 0x80, 0xc4, 0xd1, 0xe3, 0x96, 0xa7, 0x92, 0x5f, 0x7d, 0x80, 0x7a, 0x6e, 0x1b,
+	0x95, 0xa1, 0xd8, 0x1f, 0x8d, 0xd4, 0xe0, 0xc1, 0xbb, 0x8a, 0x3a, 0xe8, 0x4d, 0x26, 0x4a, 0xbf,
+	0xd7, 0xe0, 0xd0, 0x19, 0x88, 0x37, 0x23, 0x5d, 0xd7, 0xbe, 0x69, 0xa3, 0x61, 0x83, 0xbf, 0xfa,
+	0x2b, 0x40, 0x29, 0x10, 0x72, 0x0d, 0x30, 0x31, 0xf6, 0xe1, 0x60, 0x42, 0x52, 0x52, 0x3a, 0x3b,
+	0xd9, 0xe4, 0x8b, 0x03, 0x3b, 0x9b, 0xd5, 0x1e, 0x17, 0xd0, 0x3b, 0x28, 0xe9, 0xf6, 0x52, 0xb3,
+	0x50, 0x2a, 0x25, 0x3d, 0x7f, 0xe4, 0xf3, 0x7b, 0x78, 0x70, 0xf0, 0x0b, 0x9c, 0x65, 0xc6, 0x01,
+	0x6a, 0xe6, 0x84, 0xe7, 0xe6, 0x84, 0x2c, 0xe5, 0xf6, 0xe3, 0xfe, 0xc0, 0x05, 0xd4, 0x0f, 0x2f,
+	0x8b, 0x3e, 0xe8, 0x7b, 0x97, 0xe5, 0xbe, 0xf4, 0x34, 0xab, 0xa4, 0xf3, 0x71, 0x01, 0xdd, 0x80,
+	0x18, 0x5f, 0x8e, 0xe4, 0x83, 0x15, 0x8f, 0xb3, 0xd1, 0xa0, 0x92, 0x7a, 0x6a, 0x74, 0x99, 0x4b,
+	0xcd, 0x74, 0xa2, 0x2c, 0x3f, 0xb0, 0x1b, 0xd9, 0x5b, 0xf4, 0x47, 0xfb, 0x23, 0x4f, 0xf3, 0x2c,
+	0xd9, 0x89, 0xff, 0x22, 0x70, 0x61, 0x76, 0xc2, 0xd0, 0x37, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff,
+	0xb2, 0xf1, 0xa4, 0x0a, 0xc4, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -500,8 +770,10 @@ type ArenaClient interface {
 	SayBalance(ctx context.Context, in *BalanceRequest, opts ...grpc.CallOption) (*BalanceReply, error)
 	LogIn(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
 	ArenaInitiate(ctx context.Context, in *ArenaInitiateRequest, opts ...grpc.CallOption) (*ArenaFindReply, error)
+	ArenaAddParry(ctx context.Context, in *ArenaAddParryRequest, opts ...grpc.CallOption) (*ParryReply, error)
 	ArenaFind(ctx context.Context, in *ArenaFindRequest, opts ...grpc.CallOption) (*ArenaFindReply, error)
 	ArenaResult(ctx context.Context, in *ArenaResultRequest, opts ...grpc.CallOption) (*ArenaResultReply, error)
+	News(ctx context.Context, in *BalanceRequest, opts ...grpc.CallOption) (*NewsReply, error)
 }
 
 type arenaClient struct {
@@ -539,6 +811,15 @@ func (c *arenaClient) ArenaInitiate(ctx context.Context, in *ArenaInitiateReques
 	return out, nil
 }
 
+func (c *arenaClient) ArenaAddParry(ctx context.Context, in *ArenaAddParryRequest, opts ...grpc.CallOption) (*ParryReply, error) {
+	out := new(ParryReply)
+	err := c.cc.Invoke(ctx, "/protobuf.Arena/ArenaAddParry", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *arenaClient) ArenaFind(ctx context.Context, in *ArenaFindRequest, opts ...grpc.CallOption) (*ArenaFindReply, error) {
 	out := new(ArenaFindReply)
 	err := c.cc.Invoke(ctx, "/protobuf.Arena/ArenaFind", in, out, opts...)
@@ -557,14 +838,25 @@ func (c *arenaClient) ArenaResult(ctx context.Context, in *ArenaResultRequest, o
 	return out, nil
 }
 
+func (c *arenaClient) News(ctx context.Context, in *BalanceRequest, opts ...grpc.CallOption) (*NewsReply, error) {
+	out := new(NewsReply)
+	err := c.cc.Invoke(ctx, "/protobuf.Arena/News", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ArenaServer is the server API for Arena service.
 type ArenaServer interface {
 	// Sends a greeting
 	SayBalance(context.Context, *BalanceRequest) (*BalanceReply, error)
 	LogIn(context.Context, *LoginRequest) (*LoginReply, error)
 	ArenaInitiate(context.Context, *ArenaInitiateRequest) (*ArenaFindReply, error)
+	ArenaAddParry(context.Context, *ArenaAddParryRequest) (*ParryReply, error)
 	ArenaFind(context.Context, *ArenaFindRequest) (*ArenaFindReply, error)
 	ArenaResult(context.Context, *ArenaResultRequest) (*ArenaResultReply, error)
+	News(context.Context, *BalanceRequest) (*NewsReply, error)
 }
 
 func RegisterArenaServer(s *grpc.Server, srv ArenaServer) {
@@ -625,6 +917,24 @@ func _Arena_ArenaInitiate_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Arena_ArenaAddParry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArenaAddParryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArenaServer).ArenaAddParry(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Arena/ArenaAddParry",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArenaServer).ArenaAddParry(ctx, req.(*ArenaAddParryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Arena_ArenaFind_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ArenaFindRequest)
 	if err := dec(in); err != nil {
@@ -661,6 +971,24 @@ func _Arena_ArenaResult_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Arena_News_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BalanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArenaServer).News(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Arena/News",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArenaServer).News(ctx, req.(*BalanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Arena_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "protobuf.Arena",
 	HandlerType: (*ArenaServer)(nil),
@@ -678,6 +1006,10 @@ var _Arena_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Arena_ArenaInitiate_Handler,
 		},
 		{
+			MethodName: "ArenaAddParry",
+			Handler:    _Arena_ArenaAddParry_Handler,
+		},
+		{
 			MethodName: "ArenaFind",
 			Handler:    _Arena_ArenaFind_Handler,
 		},
@@ -685,43 +1017,11 @@ var _Arena_serviceDesc = grpc.ServiceDesc{
 			MethodName: "ArenaResult",
 			Handler:    _Arena_ArenaResult_Handler,
 		},
+		{
+			MethodName: "News",
+			Handler:    _Arena_News_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "ArenaService.proto",
-}
-
-func init() { proto.RegisterFile("ArenaService.proto", fileDescriptor_ArenaService_84be1f0c08eac87c) }
-
-var fileDescriptor_ArenaService_84be1f0c08eac87c = []byte{
-	// 470 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x53, 0xcd, 0x6e, 0xd3, 0x40,
-	0x18, 0xcc, 0xba, 0x29, 0x24, 0xd3, 0x36, 0x44, 0x9f, 0x2a, 0x64, 0x59, 0x28, 0x8a, 0x56, 0x1c,
-	0x2a, 0x0e, 0x11, 0x2a, 0x07, 0x24, 0x54, 0x21, 0xd2, 0xa6, 0x54, 0x86, 0x34, 0x96, 0x9c, 0x9e,
-	0xb8, 0x6d, 0xd2, 0x25, 0xb2, 0xea, 0xd8, 0x21, 0xde, 0x80, 0xf2, 0x02, 0x88, 0x67, 0xe0, 0xe5,
-	0x78, 0x15, 0xe4, 0xf5, 0x4f, 0xb6, 0x26, 0x6d, 0x8e, 0x9c, 0xbc, 0x3b, 0x3b, 0x33, 0xdf, 0xf8,
-	0xdb, 0x6f, 0x41, 0xfd, 0xa5, 0x8c, 0xc4, 0x58, 0x2e, 0xbf, 0x07, 0x53, 0xd9, 0x5b, 0x2c, 0x63,
-	0x15, 0x53, 0x43, 0x7f, 0x26, 0xab, 0xaf, 0xfc, 0x25, 0x5a, 0xe7, 0x22, 0x14, 0xd1, 0x54, 0xfa,
-	0xf2, 0xdb, 0x4a, 0x26, 0x8a, 0x08, 0xf5, 0x48, 0xcc, 0xa5, 0xcd, 0xba, 0xec, 0xa4, 0xe9, 0xeb,
-	0x35, 0x3f, 0xc3, 0x61, 0xc9, 0x5a, 0x84, 0xeb, 0x6d, 0x1c, 0xb2, 0xf1, 0x74, 0x92, 0x71, 0x6c,
-	0xab, 0xcb, 0x4e, 0x2c, 0xbf, 0xd8, 0xf2, 0xf7, 0x38, 0x1c, 0xc6, 0xb3, 0x20, 0x7a, 0xa4, 0x02,
-	0x39, 0x68, 0x2c, 0x44, 0x92, 0xfc, 0x88, 0x97, 0xb7, 0x5a, 0xde, 0xf4, 0xcb, 0x3d, 0x3f, 0x03,
-	0x72, 0x7d, 0x5a, 0xdb, 0x41, 0x43, 0xc5, 0xd3, 0x3b, 0x19, 0xb9, 0x83, 0xdc, 0xa1, 0xdc, 0x97,
-	0xce, 0x96, 0x91, 0xfd, 0x17, 0xc3, 0xb1, 0x6e, 0x81, 0x1b, 0x05, 0x2a, 0x10, 0xaa, 0xfc, 0xd1,
-	0xc7, 0x8c, 0xba, 0x38, 0xc8, 0xd6, 0x5a, 0x99, 0xfb, 0x99, 0x10, 0x75, 0x00, 0x25, 0xc5, 0xfc,
-	0x46, 0x43, 0xf6, 0x9e, 0x26, 0x18, 0x48, 0x1a, 0x65, 0x14, 0x4c, 0xef, 0xec, 0x7a, 0x16, 0x25,
-	0x5d, 0xf3, 0x1b, 0xb4, 0xb5, 0xf8, 0x63, 0x10, 0xdd, 0x16, 0x29, 0x2a, 0x95, 0xd8, 0xae, 0x4a,
-	0x56, 0xb5, 0x12, 0x7f, 0x8d, 0x96, 0xe1, 0x9a, 0xb6, 0xa8, 0x03, 0x8c, 0xc4, 0x5c, 0x26, 0xfd,
-	0x30, 0x10, 0x89, 0xcd, 0xba, 0x7b, 0xa9, 0x62, 0x83, 0xf0, 0x9f, 0x2c, 0x9f, 0x0a, 0x5f, 0x26,
-	0xab, 0x50, 0xfd, 0xbf, 0x86, 0xfc, 0x66, 0x79, 0x47, 0x8a, 0x20, 0x69, 0xfa, 0x4f, 0xc0, 0xb5,
-	0x4c, 0x12, 0x31, 0x93, 0xde, 0x4a, 0xe9, 0x20, 0xad, 0xd3, 0x57, 0xbd, 0x62, 0x62, 0x7b, 0x55,
-	0x7e, 0x06, 0x6c, 0x14, 0xbe, 0xa1, 0xe6, 0xef, 0xf0, 0xac, 0x72, 0x4c, 0x0d, 0xd4, 0xaf, 0x3c,
-	0x6f, 0xd0, 0xae, 0x51, 0x0b, 0x38, 0xef, 0x0f, 0xae, 0x2f, 0xc7, 0xe3, 0xfe, 0xd5, 0x65, 0x9b,
-	0xd1, 0x11, 0x9a, 0x17, 0xde, 0x70, 0xe8, 0x7e, 0x71, 0xbd, 0x51, 0xdb, 0x3a, 0xfd, 0x63, 0x61,
-	0x3f, 0xfb, 0xb5, 0x0f, 0xc0, 0x58, 0xac, 0xf3, 0x17, 0x40, 0xf6, 0x26, 0xcb, 0xfd, 0xa7, 0xe3,
-	0x3c, 0xdf, 0x72, 0xb2, 0x08, 0xd7, 0xbc, 0x46, 0x6f, 0xb1, 0x3f, 0x8c, 0x67, 0x6e, 0x44, 0x06,
-	0xc5, 0x7c, 0x13, 0xce, 0xf1, 0x3f, 0x78, 0x26, 0xfc, 0x8c, 0xa3, 0x7b, 0xc3, 0x4b, 0x9d, 0x4a,
-	0x27, 0x2a, 0x53, 0xed, 0xd8, 0x95, 0xf3, 0x72, 0x2a, 0x78, 0x8d, 0x2e, 0xd0, 0x2c, 0x31, 0x72,
-	0xb6, 0x12, 0x77, 0x9b, 0xb8, 0x38, 0x30, 0xae, 0x80, 0x5e, 0x3c, 0x70, 0x33, 0x99, 0x91, 0xf3,
-	0xf0, 0xbd, 0xf1, 0xda, 0xe4, 0x89, 0x3e, 0x7c, 0xf3, 0x37, 0x00, 0x00, 0xff, 0xff, 0xf8, 0xda,
-	0xfd, 0xd9, 0xa3, 0x04, 0x00, 0x00,
 }
