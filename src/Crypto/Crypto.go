@@ -12,7 +12,7 @@ import (
 type Crypto struct {
 	PKey   *rsa.PrivateKey
 	PubKey *rsa.PublicKey
-}
+}go run
 
 func (C *Crypto) Decrypt(src string) string {
 	hash := sha256.New()

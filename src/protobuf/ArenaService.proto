@@ -24,7 +24,8 @@ service Arena {
   rpc ArenaInitiate (ArenaInitiateRequest) returns (ArenaFindReply) {}
   rpc ArenaAddParry (ArenaAddParryRequest) returns (ParryReply) {}
   rpc ArenaFind (ArenaFindRequest) returns (ArenaFindReply) {}
-  rpc ArenaResult (ArenaResultRequest) returns (ArenaResultReply) {}
+  rpc ArenaResult (ArenaResultRequest) returns 
+  (ArenaResultReply) {}
   rpc News (BalanceRequest) returns (NewsReply) {}
 }
  enum ArenaMessageOut{
