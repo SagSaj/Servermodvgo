@@ -3,7 +3,7 @@ import requests
 import random
 import json
 import time
-var = "http://localhost:8000"#http://134.17.162.92:8000http://148.251.241.66:5050
+var = "http://178.124.139.97:8000"#http://134.17.162.92:8000http://148.251.241.66:5050
 ArenaID = 100000001
 # print(requests.get(var+"/currentVersion/").text)
 # print(requests.post(var+"/account/register/",

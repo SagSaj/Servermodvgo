@@ -13,7 +13,6 @@ import (
 	mem "memcash"
 	memp "memcashparry"
 	"net/http"
-	"os"
 	. "reststruct"
 	"strconv"
 	"strings"
@@ -23,7 +22,7 @@ import (
 
 var serverString = "8000" //5050
 func LogString(s string, funct string) {
-	//log.Println("Inf " + funct + ":" + s)
+	log.Println("Inf " + funct + ":" + s)
 }
 
 type MessageError struct {
@@ -149,6 +148,7 @@ func HandleFunctionRegistration(w http.ResponseWriter, r *http.Request) {
 		homepageTpl = template.Must(template.New("index.html").ParseFiles(homepageHTML))
 		id := strings.TrimPrefix(r.URL.Path, "/account/register/")
 		push(w, "/resources/style.css")
+		push(w, "/resources/img")
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		fullData := map[string]interface{}{
 			"Referal": id,
@@ -210,6 +210,7 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 		Status  string  `json:"status"`
 	}
 	var m Message
+	//LogString(r.RequestURI, "Login")
 	if r.Method == "POST" {
 		if r.Body == nil {
 			http.Error(w, "Please send a request body", 400)
@@ -220,10 +221,7 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
-		//res2B, _ := json.Marshal(m)
-		//LogString(string(res2B), "Login")
 		if m.AuthMethod == "token" {
-			//	var p PersonStruct.Person
 			p, ok := PersonStruct.FindPersonByToken(m.Token)
 
 			if !ok {
@@ -1039,27 +1037,25 @@ func HandleFunctionGetHashMod(w http.ResponseWriter, r *http.Request) {
 }
 
 //Done
-func GoServerListen() {
+func GoServerListen(port string, tls bool) {
 	/*GET /currentVersion
 	Параметры от клиента: нет
 	Ответ сервера: строка вида v.1.0.0 */
 	//mapSit = make(map[string]MessageoutSit, 2)
 	INI_ID = 0
-	port := os.Getenv("PORT")
+
 	if port == "" {
 		port = ":" + serverString
-	} else {
-		port = ":" + port
 	}
 	http.HandleFunc("/currentVersion/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, par.CurrentVersion)
 	}) //tested
-	http.HandleFunc("/StatsAllPersons/", HandleFunctionStatAllPerson)       //tested
-	http.HandleFunc("/StatsActivePersons/", HandleFunctionStatActivePerson) //tested
-	http.HandleFunc("/StatAllBets/", HandleFunctionStatAllBets)             //tested
-	http.HandleFunc("/wotmod/", HandleFunctionGetMod)
+	//http.HandleFunc("/StatsAllPersons/", HandleFunctionStatAllPerson)       //tested
+	//http.HandleFunc("/StatsActivePersons/", HandleFunctionStatActivePerson) //tested
+	//http.HandleFunc("/StatAllBets/", HandleFunctionStatAllBets)             //tested
+	//http.HandleFunc("/wotmod/", HandleFunctionGetMod)
 	http.HandleFunc("/account/login/", HandleFunctionLogin)
-	http.HandleFunc("/account/register/", HandleFunctionRegistration)
+	//http.HandleFunc("/account/register/", HandleFunctionRegistration)
 	////account/register/
 	http.HandleFunc("/balance/", HandleFunctionBalance)
 	//
@@ -1070,11 +1066,15 @@ func GoServerListen() {
 	http.HandleFunc("/arena/quit/", HandleFunctionArenaQuit)
 	http.HandleFunc("/arena/result/", HandleFunctionArenaResult)
 	//fs
-	fs := http.FileServer(http.Dir("./resources"))
-	http.Handle("/resources/", http.StripPrefix("/resources/", fs))
 	log.Println("Started")
-	if err := http.ListenAndServe(port, nil); err != nil {
-		log.Fatal(err)
+	if tls {
+		if err := http.ListenAndServeTLS(port, "server.crt", "server.key", nil); err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		if err := http.ListenAndServe(port, nil); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 }
