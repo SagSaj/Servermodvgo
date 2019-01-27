@@ -454,3 +454,15 @@ func Clone() {
 	}
 	return
 }
+func Position(balance float32) int {
+	session := GetMongoSession()
+	defer session.Close()
+	var l []LoginInformation
+	c := session.DB(dBName).C("persons")
+	err := c.Find(bson.M{"balance": bson.M{"$gte": balance}}).All(&l)
+	if err != nil {
+		log.Println(err)
+		return -1
+	}
+	return len(l)
+}

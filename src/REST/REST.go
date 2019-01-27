@@ -339,6 +339,7 @@ func HandleFunctionBalance(w http.ResponseWriter, r *http.Request) {
 	}
 	type Messageout struct {
 		Balance float32 `json:"balance"`
+		Tournament int `json:"tournament"`
 		Status  string  `json:"status"`
 	}
 	var m Message
@@ -366,9 +367,11 @@ func HandleFunctionBalance(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
+
 		mo := Messageout{
 			Balance: p.Balance,
 			Status:  "ok",
+			Tournament: subdmongo.Position(p.Balance),
 		}
 		b, err := json.Marshal(mo)
 		if err == nil {
