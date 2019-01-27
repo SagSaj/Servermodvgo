@@ -3,7 +3,10 @@ import requests
 import random
 import json
 import time
-var = "http://178.124.139.97:8000"#http://134.17.162.92:8000http://148.251.241.66:5050
+import urllib2
+# http://134.17.162.92:8000http://148.251.241.66:5050
+#var = "http://178.124.139.97:8000"
+var = "http://localhost:8000"
 ArenaID = 100000001
 # print(requests.get(var+"/currentVersion/").text)
 # print(requests.post(var+"/account/register/",
@@ -19,14 +22,56 @@ ArenaID = 100000001
 # {"accountIDs":["20388892","195331"],"pending":[{"id":3,"type":"teamvictory","fromAccountID":"195331","toAccountID":"20388892","betValue":28,"status":"pending","arenaID":"12307775789379236","createdAt":"2018-11-10T10:12:04.131Z","updatedAt":"2018-11-10T10:12:04.131Z","deletedAt":null}],"incoming":[],"active":[],"rejected":[],"declined":[]}
 # print(requests.get(var+"/currentVersion").text)#http://148.251.241.66:5050
 # tokens = []
-s=json.loads(requests.post(var+"/account/login/",
-                                 json={'accountID': 123224,
-                                       'login': 'client12412341',
-                                       'auth_method': 'password',
-                                       'token': '', 'password': 'client111'}).text)
-Token1 = s["token"]
-print(requests.post(var+"/gethashmod/",
-                    json={'token': Token1}).text)
+class ConnectionManager(object):
+        def initiateConnection(self, url, params, callback):
+            if not url.endswith('/'):
+                url += '/'
+            result = self.do_request(url, params)
+            callback(result)
+
+        def do_request(self, url, params):
+            try:
+                print('url')
+                req = urllib2.urlopen(
+                        urllib2.Request(var + '/' + url, json.dumps(params),
+                                        {'Content-Type': 'application/json'}))
+            except urllib2.HTTPError as e:
+                print(e)
+            result_str = req.read()
+            return result_str
+
+
+def onRegistered(responseData):
+    print(responseData)
+
+
+def onLoggedOn(responseData):
+    print(responseData)
+
+
+g_connectionManager = ConnectionManager()
+loginParams = {
+    'login': "client1",
+    'auth_method': "password"}
+loginParams['password'] = "client1"
+loginParams['accountID'] = 1
+mode='login'
+callback = onLoggedOn if mode == 'login' else onRegistered
+
+g_connectionManager.initiateConnection(
+    'account/' + 'login', loginParams, callback)
+#time.sleep(100)
+
+
+###############
+#s=json.loads(requests.post(var+"/account/login/",
+#                                 json={'accountID': 123224,
+#                                       'login': 'client12412341',
+#                                       'auth_method': 'password',
+#                                       'token': '', 'password': 'client111'}).text)
+#Token1 = s["token"]
+#print(requests.post(var+"/gethashmod/",
+#                    json={'token': Token1}).text)
 # for i in range(200,300):
 
 #       print(requests.post(var+"/account/register/",
@@ -97,10 +142,6 @@ print(requests.post(var+"/gethashmod/",
 #                                                 'arenaID': ArenaID,
 #                                                                  "data": {"victory": True}
 #                                                                  }).text)
-
-
-
-
 
 
 #print(requests.post("http://localhost:8000/account/login/",

@@ -4,10 +4,13 @@ import (
 	par "Params"
 	"PersonStruct"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
 	ios "io/ioutil"
+	"logschan"
+	"os"
 
 	"log"
 	mem "memcash"
@@ -18,6 +21,12 @@ import (
 	"strings"
 	"subdmongo"
 	"time"
+)
+
+type key int
+
+const (
+	requestIDKey key = 0
 )
 
 var serverString = "8000" //5050
@@ -180,8 +189,7 @@ func push(w http.ResponseWriter, resource string) {
 	}
 }
 
-//Done
-func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
+func ClassicLogin(w http.ResponseWriter, r *http.Request) {
 	//Done
 	/*POST /login
 	Параметры от клиента:
@@ -211,6 +219,7 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	var m Message
 	//LogString(r.RequestURI, "Login")
+
 	if r.Method == "POST" {
 		if r.Body == nil {
 			http.Error(w, "Please send a request body", 400)
@@ -306,6 +315,11 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
 
+}
+
+//Done
+func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
+	ClassicLogin(w, r)
 }
 
 //Done
@@ -683,7 +697,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 				value := massI[0]
 
 				if memp.VerifyActive(are, value.ToAccountID, value.BetValue) {
-					subdmongo.AddReferencePoint(p.Login, false)
+					//subdmongo.AddReferencePoint(p.Login, false)
 					a.AddNewParry(value.FromAccountID, value.ToAccountID, value.BetValue)
 				}
 			}
@@ -978,7 +992,7 @@ func HandleFunctionStatAllBets(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-const HTTPserverpathGetMod = "/account/register/"
+const HTTPserverpathGetMod = "http://challenger.dueler.club/account/register/"
 
 func HandleFunctionGetHashMod(w http.ResponseWriter, r *http.Request) {
 
@@ -1017,7 +1031,7 @@ func HandleFunctionGetHashMod(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 			http.Error(w, err.Error(), 400)
 		}
-		stans := r.Host + HTTPserverpathGetMod + str
+		stans := HTTPserverpathGetMod + str
 		//
 		mo := Messageout{
 			Reference: stans,
@@ -1035,6 +1049,36 @@ func HandleFunctionGetHashMod(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
 }
+func tracing(nextRequestID func() string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			requestID := r.Header.Get("X-Request-Id")
+			if requestID == "" {
+				requestID = nextRequestID()
+			}
+			ctx := context.WithValue(r.Context(), requestIDKey, requestID)
+			w.Header().Set("X-Request-Id", requestID)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
+
+var Myloger = logschan.Log{}
+
+func logging(logger *log.Logger) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			defer func() {
+				requestID, ok := r.Context().Value(requestIDKey).(string)
+				if !ok {
+					requestID = "unknown"
+				}
+				Myloger.AddLog(requestID, r.Method, r.URL.Path, r.RemoteAddr, r.UserAgent())
+			}()
+			next.ServeHTTP(w, r)
+		})
+	}
+}
 
 //Done
 func GoServerListen(port string, tls bool) {
@@ -1042,37 +1086,49 @@ func GoServerListen(port string, tls bool) {
 	Параметры от клиента: нет
 	Ответ сервера: строка вида v.1.0.0 */
 	//mapSit = make(map[string]MessageoutSit, 2)
-	INI_ID = 0
-
+	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
 	if port == "" {
 		port = ":" + serverString
 	}
-	http.HandleFunc("/currentVersion/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, par.CurrentVersion)
-	}) //tested
 	//http.HandleFunc("/StatsAllPersons/", HandleFunctionStatAllPerson)       //tested
 	//http.HandleFunc("/StatsActivePersons/", HandleFunctionStatActivePerson) //tested
 	//http.HandleFunc("/StatAllBets/", HandleFunctionStatAllBets)             //tested
+	router := http.NewServeMux()
+	nextRequestID := func() string {
+		return fmt.Sprintf("%d", time.Now().UnixNano())
+	}
+
+	server := &http.Server{
+		Addr:         port,
+		Handler:      tracing(nextRequestID)(logging(logger)(router)),
+		ErrorLog:     logger,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
+	router.Handle("/currentVersion/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, par.CurrentVersion)
+	})) //tested
 	//http.HandleFunc("/wotmod/", HandleFunctionGetMod)
-	http.HandleFunc("/account/login/", HandleFunctionLogin)
+	router.Handle("/account/login/", http.HandlerFunc(HandleFunctionLogin))
 	//http.HandleFunc("/account/register/", HandleFunctionRegistration)
 	////account/register/
-	http.HandleFunc("/balance/", HandleFunctionBalance)
+	router.Handle("/balance/", http.HandlerFunc(HandleFunctionBalance))
 	//
-	http.HandleFunc("/arena/enter/", HandleFunctionArenaEnter)
-	http.HandleFunc("/arena/situation/", HandleFunctionArenaSituation)
-	http.HandleFunc("/parry/", HandleFunctionParry)
-	http.HandleFunc("/gethashmod/", HandleFunctionGetHashMod)
-	http.HandleFunc("/arena/quit/", HandleFunctionArenaQuit)
-	http.HandleFunc("/arena/result/", HandleFunctionArenaResult)
+	router.Handle("/arena/enter/", http.HandlerFunc(HandleFunctionArenaEnter))
+	router.Handle("/arena/situation/", http.HandlerFunc(HandleFunctionArenaSituation))
+	router.Handle("/parry/", http.HandlerFunc(HandleFunctionParry))
+	router.Handle("/gethashmod/", http.HandlerFunc(HandleFunctionGetHashMod))
+	router.Handle("/arena/quit/", http.HandlerFunc(HandleFunctionArenaQuit))
+	router.Handle("/arena/result/", http.HandlerFunc(HandleFunctionArenaResult))
 	//fs
 	log.Println("Started")
 	if tls {
-		if err := http.ListenAndServeTLS(port, "server.crt", "server.key", nil); err != nil {
+		if err := server.ListenAndServeTLS("server.crt", "server.key"); err != nil {
 			log.Fatal(err)
 		}
 	} else {
-		if err := http.ListenAndServe(port, nil); err != nil {
+		if err := server.ListenAndServe(); err != nil {
 			log.Fatal(err)
 		}
 	}

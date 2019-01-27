@@ -8,6 +8,7 @@ import (
 	gen "generatetoken"
 	"log"
 	"os"
+	"time"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -121,7 +122,7 @@ func RegistrNewPerson(login, password string) (LoginInformation, error) {
 	if b {
 		return def, errors.New("Exist")
 	}
-	l := LoginInformation{Login: login, Password: password, Balance: 100, WinCount: 0, LoseCount: 0}
+	l := LoginInformation{Login: login, Password: password, Balance: 40, WinCount: 0, LoseCount: 0}
 	c := session.DB(dBName).C("persons")
 	err = c.Insert(&l)
 	if err != nil {
@@ -154,7 +155,7 @@ func RegistrNewPersonWithID(login, password string, ID int) (LoginInformation, e
 		return def, errors.New("Exist")
 	}
 	log.Println("Add")
-	l := LoginInformation{Login: login, Password: password, Balance: 100, WinCount: 0, LoseCount: 0, IDAccount: ID}
+	l := LoginInformation{Login: login, Password: password, Balance: 40, WinCount: 0, LoseCount: 0, IDAccount: ID}
 	c := session.DB(dBName).C("persons")
 	err = c.Insert(&l)
 
@@ -388,7 +389,7 @@ func CheckReference(login string, referal string) (bool, error) {
 	}
 	return true, nil
 }
-func AddReferencePoint(login string, isRegistr bool) {
+func AddReferencePoint(login string) {
 	session := GetMongoSession()
 	defer session.Close()
 	r := References{}
@@ -413,11 +414,43 @@ func AddReferencePoint(login string, isRegistr bool) {
 
 	c2 := session.DB(dBName).C("persons")
 	//_, err = c.Upsert(bson.M{"Login": login}, bson.M{"$set": bson.M{"LoseCount": result.LoseCount, "WinCount": result.LoseCount, "Balance": result.LoseCount}})
-	err = c2.Update(bson.M{"login": p.Login}, bson.M{"$set": bson.M{"referalpoints": i}})
+	err = c2.Update(bson.M{"login": p.Login}, bson.M{"$add": bson.M{"balance": 1}})
 	//log.Println(GetBalance(login))
 	if err != nil {
 		log.Println(err)
 		return
+	}
+	return
+}
+func GetTopPlayers(col string) (l []LoginInformation) {
+	session := GetMongoSession()
+	defer session.Close()
+	if col == "" {
+		col = "persons"
+	}
+	c := session.DB(dBName).C(col)
+	err = c.Find(nil).Sort("-balance").All(&l)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	return
+
+}
+func Clone() {
+	session := GetMongoSession()
+	defer session.Close()
+	var l []LoginInformation
+	c := session.DB(dBName).C("persons")
+	t := time.Now()
+	c2 := session.DB(dBName).C("persons" + t.Format("2006-01-02"))
+	err = c.Find(nil).All(&l)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	for li := range l {
+		c2.Insert(&li)
 	}
 	return
 }

@@ -152,6 +152,9 @@ func WinMatch(Token string, bet float32) {
 		p.Balance = p.Balance + bet
 		p.WinCount += 1
 		mongo.SetBalanceAndWinCount(p.Login, bet, 1, 0)
+		if p.WinCount+p.LoseCount == 1 || p.WinCount+p.LoseCount > 9 {
+			mongo.AddReferencePoint(p.Login)
+		}
 		log.Println("Balance changed ")
 	} else {
 		log.Println("Tocken " + Token + " didn't find in MatchResult")
@@ -167,7 +170,9 @@ func LoseMatch(Token string, bet float32) {
 		p.Balance = p.Balance - bet
 		p.LoseCount += 1
 		mongo.SetBalanceAndWinCount(p.Login, -bet, 0, 1)
-		log.Println("Balance changed ")
+		if p.WinCount+p.LoseCount == 1 || p.WinCount+p.LoseCount > 9 {
+			mongo.AddReferencePoint(p.Login)
+		}
 	} else {
 		log.Println("Tocken " + Token + " didn't find in MatchResult")
 	}

@@ -3,16 +3,26 @@ package RESTSITE
 import (
 	"PersonStruct"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
 	ios "io/ioutil"
 	"log"
+	"logschan"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"subdmongo"
+	"time"
+)
+
+type key int
+
+const (
+	requestIDKey key = 0
 )
 
 var serverString = "7000" //5050
@@ -36,8 +46,8 @@ var homepageTpl *template.Template
 func init() {
 
 }
-func HandleFunctionRegistration(w http.ResponseWriter, r *http.Request) {
-	//Done
+func ClassicRegistration(w http.ResponseWriter, r *http.Request){
+		//Done
 	/*POST /login
 	Параметры от клиента:
 	{“accountID”: 20388892, //Wargaming account ID
@@ -165,18 +175,51 @@ func HandleFunctionRegistration(w http.ResponseWriter, r *http.Request) {
 		//	log.Println(name)
 		homepageTpl = template.Must(template.New("registration.html").ParseFiles(homepageHTML))
 		id := strings.TrimPrefix(r.URL.Path, "/account/register/")
+		lang := "en"
+		if strings.Contains(id, "ru") {
+			lang = "ru"
+			id = strings.TrimPrefix(id, "ru/")
+		}
 		//	push(w, "/resources/style.css")
 		//	push(w, "/resources/img/background.png")
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fullData := map[string]interface{}{
-			"Referal": id,
-			"Host":    r.Host,
+		fullData := map[string]interface{}{}
+		switch lang {
+		case "ru":
+			fullData = map[string]interface{}{
+				"Referal":         id,
+				"Host":            r.Host,
+				"Succesfull":      "Регистрация прошла успешно.",
+				"DOWNLOAD":        "СКАЧАТЬ",
+				"Registration":    "РЕГИСТРАЦИЯ",
+				"Password":        "Пароль",
+				"Confirmpassword": "Подвердите пароль",
+				"Lang":            "ru",
+				"Langref":         "/account/register/" + id,
+				"Refback":         "ru/",
+			}
+		default:
+			fullData = map[string]interface{}{
+				"Referal":         id,
+				"Host":            r.Host,
+				"Succesfull":      "Rigistration is succesfull.",
+				"DOWNLOAD":        "DOWNLOAD",
+				"Registration":    "Registration",
+				"Password":        "Password",
+				"Confirmpassword": "Confirm password",
+				"Lang":            "en",
+				"Langref":         "/account/register/ru/" + id,
+			}
 		}
+
 		render(w, r, homepageTpl, "registration.html", fullData)
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
 
+}
+func HandleFunctionRegistration(w http.ResponseWriter, r *http.Request) {
+	ClassicRegistration(w,r)
 }
 
 // Render a template, or server error.
@@ -198,9 +241,7 @@ func push(w http.ResponseWriter, resource string) {
 		}
 	}
 }
-
-//Done
-func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
+func ClassicLogin(w http.ResponseWriter, r *http.Request){
 	//Done
 	/*POST /login
 	Параметры от клиента:
@@ -229,6 +270,9 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 		Status  string  `json:"status"`
 	}
 	var m Message
+	//log.Println("restsite")
+	//log.Println(r.RequestURI)
+	//log.Println(r.Host)
 	if r.Method == "POST" {
 		if r.Body == nil {
 			http.Error(w, "Please send a request body", 400)
@@ -326,6 +370,10 @@ func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
+}
+//Done
+func HandleFunctionLogin(w http.ResponseWriter, r *http.Request) {
+	ClassicLogin(w,r)
 
 }
 
@@ -354,7 +402,6 @@ func HandleFunctionGetMod(w http.ResponseWriter, r *http.Request) {
 func HandleFunctionStatAllPerson(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-
 		fmt.Fprintf(w, strconv.Itoa(subdmongo.GetAllPersons()))
 
 	} else {
@@ -443,6 +490,8 @@ func HandleFunctionGetHashMod(w http.ResponseWriter, r *http.Request) {
 }
 func HandleFunctionIndex(w http.ResponseWriter, r *http.Request) {
 	//log.Println(r.RequestURI)
+	//log.Println(r.RequestURI)
+	//log.Println(r.Host)
 	if r.Method == "GET" {
 		homepageHTML := "index.html"
 		//log.Println(r.URL)
@@ -456,10 +505,65 @@ func HandleFunctionIndex(w http.ResponseWriter, r *http.Request) {
 		fullData := map[string]interface{}{
 			"Host": r.Host,
 		}
+		lang := "en"
+		if strings.Contains(r.URL.Path, "ru") {
+			lang = "ru"
+		}
+		switch lang {
+		case "ru":
+			fullData["Lang"] = "ru"
+			fullData["Refback"] = "ru/"
+			fullData["Langref"] = "/"
+			fullData["CONTACTUS"] = "КОНТАКТЫ"
+			fullData["Stanislav"] = "Станислав"
+			fullData["Techsupport"] = "тех. поддержка"
+
+			fullData["Andrey"] = "Андрей"
+			fullData["cofounder"] = "соискатель"
+			fullData["networks"] = "или напишите нам в социальных сетях"
+			fullData["PRODUCTS"] = "ПРОЕКТЫ"
+			fullData["String1"] = "Первая в мире внутриигровая беттинговая платформа основанная на ИИ."
+			fullData["String2"] = "Ты можешь выбрать противника и поставить в процессе твоей"
+			fullData["String3"] = "любимой игры используя удобный интерфейс."
+			fullData["String4"] = "И наш ИИ честно определяет"
+			fullData["String5"] = "победителя."
+
+		default:
+			fullData["Lang"] = "en"
+			fullData["Refback"] = ""
+			fullData["CONTACTUS"] = "CONTACT US"
+			fullData["Stanislav"] = "Stanislav"
+			fullData["Techsupport"] = "tech. support"
+			fullData["Langref"] = "/ru/"
+			fullData["Andrey"] = "Andrey"
+			fullData["cofounder"] = "co-founder"
+			fullData["networks"] = "or write to us in social networks"
+			fullData["PRODUCTS"] = "PRODUCTS"
+			fullData["String1"] = "The world's first ingame betting platform based on AI."
+			fullData["String2"] = "You can choose an opponent and bet during your"
+			fullData["String3"] = "favorite game using a convenient interface."
+			fullData["String4"] = "And our AI will honestly determine"
+			fullData["String5"] = "the winner."
+		}
 		render(w, r, homepageTpl, "index.html", fullData)
 	} else {
+
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
+}
+
+var firstpl float32 = 300
+
+func WidthCount(args ...interface{}) string {
+	var s subdmongo.LoginInformation
+	if len(args) == 1 {
+		s, _ = args[0].(subdmongo.LoginInformation)
+	}
+	ito := s.Balance / firstpl * 300
+	return fmt.Sprintf("%d", int(ito))
+}
+func add(x, y int) int {
+    return x + y
 }
 func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
@@ -467,13 +571,64 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 		//log.Println(r.URL)
 		//	name := path.Base(homepageHTML)
 		//	log.Println(name)
-		homepageTpl = template.Must(template.New("dueler.html").ParseFiles(homepageHTML))
-
+		t := template.New("dueler.html")
+		t = t.Funcs(template.FuncMap{"Width": WidthCount})
+		t = t.Funcs(template.FuncMap{"Add": add})
+		homepageTpl = template.Must(t.ParseFiles(homepageHTML))
 		//	push(w, "/resources/style.css")
 		//	push(w, "/resources/img/background.png")
+
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		l := subdmongo.GetTopPlayers()
+		//l[1].Balance / l[0].Balance * 300
+		firstpl = l[0].Balance
 		fullData := map[string]interface{}{
-			"Host": r.Host,
+			"Host":           r.Host,
+			"PlayersPoints":  l,
+			"Player1Balance": l[0].Balance,
+		}
+		lang := "en"
+		if strings.Contains(r.URL.Path, "ru") {
+			lang = "ru"
+		}
+		switch lang {
+		case "ru":
+			fullData["Lang"] = "ru"
+			fullData["Refback"] = "ru/"
+			fullData["Langref"] = "/dueler/"
+			fullData["CONTACTUS"] = "КОНТАКТЫ"
+			fullData["Stanislav"] = "Станислав"
+			fullData["Techsupport"] = "тех. поддержка"
+
+			fullData["Andrey"] = "Андрей"
+			fullData["cofounder"] = "соискатель"
+			fullData["networks"] = "или напишите нам в социальных сетях"
+			fullData["PRODUCTS"] = "ПРОЕКТЫ"
+			fullData["REGISTER"] = "РЕГИСТРАЦИЯ"
+			fullData["FORUM"] = "ФОРУМ"
+			fullData["HOWITWORKS"] = "КАКЭТОРАБОТАЕТ"
+			fullData["LIDERBOARD"] = "ТАБЛИЦА ЛИДЕРОВ"
+			fullData["gold"] = "золота"
+			fullData["info"] = "Каждый вновь зарегистрированный Игрок получает в подарок 20 баллов; Поделившийся модом получает 1 балл за каждого зарегистрированного и сыгравшего один бой со ставкой; Старт каждый день- 3:00, финиш - 3:00 следующего дня."
+			fullData["Points"] = "очков"
+		default:
+			fullData["Lang"] = "en"
+			fullData["Refback"] = ""
+			fullData["CONTACTUS"] = "CONTACT US"
+			fullData["Stanislav"] = "Stanislav"
+			fullData["Techsupport"] = "tech. support"
+			fullData["Langref"] = "/dueler/ru/"
+			fullData["Andrey"] = "Andrey"
+			fullData["cofounder"] = "co-founder"
+			fullData["networks"] = "or write to us in social networks"
+			fullData["PRODUCTS"] = "PRODUCTS"
+			fullData["REGISTER"] = "REGISTER"
+			fullData["FORUM"] = "FORUM"
+			fullData["HOWITWORKS"] = "HOWITWORKS"
+			fullData["LIDERBOARD"] = "LIDERBOARD"
+			fullData["gold"] = "gold"
+			fullData["info"] = "Each newly registered Player receives a gift of 20 points; A shared mod gets 1 point for each one registered and playing one battle with a bet; Start each days - 3:00 am, finish - 3:00 am next day."
+			fullData["Points"] = "points"
 		}
 		render(w, r, homepageTpl, "dueler.html", fullData)
 	} else {
@@ -481,45 +636,89 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println(";j;j")
 	http.ServeFile(w, r, "/resources/favicon.ico")
+}
+func tracing(nextRequestID func() string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			requestID := r.Header.Get("X-Request-Id")
+			if requestID == "" {
+				requestID = nextRequestID()
+			}
+			ctx := context.WithValue(r.Context(), requestIDKey, requestID)
+			w.Header().Set("X-Request-Id", requestID)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
+
+var Myloger = logschan.Log{}
+
+func logging(logger *log.Logger) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			defer func() {
+				requestID, ok := r.Context().Value(requestIDKey).(string)
+				if !ok {
+					requestID = "unknown"
+				}
+				Myloger.AddLog(requestID, r.Method, r.URL.Path, r.RemoteAddr, r.UserAgent())
+			}()
+			next.ServeHTTP(w, r)
+		})
+	}
 }
 
 //Done
-func GoServerListen(port string,tls bool) {
+func GoServerListen(port string, tls bool) {
 	/*GET /currentVersion
 	Параметры от клиента: нет
 	Ответ сервера: строка вида v.1.0.0 */
 	//mapSit = make(map[string]MessageoutSit, 2)
+	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
 	if port == "" {
 		port = ":" + serverString
 	}
 	//http.HandleFunc("/StatsAllPersons/", HandleFunctionStatAllPerson)       //tested
 	//http.HandleFunc("/StatsActivePersons/", HandleFunctionStatActivePerson) //tested
 	//http.HandleFunc("/StatAllBets/", HandleFunctionStatAllBets)             //tested
-	http.HandleFunc("/wotmod/", HandleFunctionGetMod)
+	router := http.NewServeMux()
+	nextRequestID := func() string {
+		return fmt.Sprintf("%d", time.Now().UnixNano())
+	}
+
+	server := &http.Server{
+		Addr:         port,
+		Handler:      tracing(nextRequestID)(logging(logger)(router)),
+		ErrorLog:     logger,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
+	router.Handle("/wotmod/", http.HandlerFunc(HandleFunctionGetMod))
 	//	http.HandleFunc("/account/login/", HandleFunctionLogin)
-	http.HandleFunc("/account/register/", HandleFunctionRegistration)
-	http.HandleFunc("/", HandleFunctionIndex)
-	http.HandleFunc("/dueler/", HandleFunctionDueler)
-	http.HandleFunc("/dueler/favicon.ico", faviconHandler)
-	http.HandleFunc("/account/register/favicon.ico", faviconHandler)
-	http.HandleFunc("/favicon.ico", faviconHandler)
+	router.Handle("/account/register/", http.HandlerFunc(HandleFunctionRegistration))
+	router.Handle("/", http.HandlerFunc(HandleFunctionIndex))
+	router.Handle("/dueler/", http.HandlerFunc(HandleFunctionDueler))
 	////account/register/
 	//http.HandleFunc("/gethashmod/", HandleFunctionGetHashMod)
 	//fs
 	fs := http.FileServer(http.Dir("resources"))
-	http.Handle("/account/register/resources/", http.StripPrefix("/account/register/resources/", fs))
-	http.Handle("/resources/", http.StripPrefix("/resources/", fs))
+
+	router.Handle("/StatsAllPersons/", http.HandlerFunc(HandleFunctionStatAllPerson))       //tested
+	router.Handle("/StatsActivePersons/", http.HandlerFunc(HandleFunctionStatActivePerson)) //tested
+	router.Handle("/StatAllBets/", http.HandlerFunc(HandleFunctionStatAllBets))             //tested
+	router.Handle("/account/register/resources/", http.StripPrefix("/account/register/resources/", fs))
+	router.Handle("/resources/", http.StripPrefix("/resources/", fs))
 	log.Println("Started")
 	if tls {
-		if err := http.ListenAndServeTLS(port,"server.crt","server.key", nil); err != nil {
-		log.Fatal(err)
-	}
-	}else{
-		if err := http.ListenAndServe(port, nil); err != nil {
+		if err := server.ListenAndServeTLS("server.crt", "server.key"); err != nil {
 			log.Fatal(err)
+		}
+	} else {
+		if err := server.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
 	}
-}
 
 }
