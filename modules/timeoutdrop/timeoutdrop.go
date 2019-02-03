@@ -8,7 +8,7 @@ var t time.Time
 
 func Initialize() {
 	t = time.Now()
-	t = time.Date(t.Year(), t.Month(), t.Day(), int(0), int(0), int(0), int(0), nil)
+	t = time.Date(t.Year(), t.Month(), t.Day(), int(0), int(0), int(0), int(0), time.UTC)
 	go TimeCount()
 }
 func TimeCount() {
@@ -18,7 +18,7 @@ func TimeCount() {
 			if t.Hour() == config.Conf.Time_reload {
 				subdmongo.Clone()
 				subdmongo.UpdateAllForDefault()
-				t = time.Date(t.Year(), t.Month(), t.Day(), int(0), int(0), int(0), int(0), nil)
+				t = time.Date(t.Year(), t.Month(), t.Day(), int(0), int(0), int(0), int(0), time.UTC)
 			}
 		}
 		time.Sleep(time.Minute * 2)
