@@ -727,6 +727,7 @@ func GoServerListen(port string, tls bool) {
 	router.Handle("/account/register/", http.HandlerFunc(HandleFunctionRegistration))
 	router.Handle("/challenger/", http.HandlerFunc(HandleFunctionIndex))
 	router.Handle("/", http.HandlerFunc(HandleFunctionDueler))
+	router.Handle("/dueler", http.HandlerFunc(HandleFunctionDueler))
 	////account/register/
 	//http.HandleFunc("/gethashmod/", HandleFunctionGetHashMod)
 	//fs
