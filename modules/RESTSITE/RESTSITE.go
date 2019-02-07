@@ -571,11 +571,24 @@ func add(x, y int) int {
 }
 func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
+		t := template.New("dueler.html")
 		homepageHTML := "dueler.html"
+		log.Println(r.RequestURI)
+		switch r.RequestURI {
+		case "/page.html":
+			homepageHTML = "page.html"
+			t = template.New("page.html")
+		case "/page2.html":
+			homepageHTML = "page2.html"
+			t = template.New("page2.html")
+		case "/dueler.html":
+		case "/":
+
+		}
 		//log.Println(r.URL)
 		//	name := path.Base(homepageHTML)
 		//	log.Println(name)
-		t := template.New("dueler.html")
+
 		t = t.Funcs(template.FuncMap{"Width": WidthCount})
 		t = t.Funcs(template.FuncMap{"Add": add})
 		homepageTpl = template.Must(t.ParseFiles(homepageHTML))
@@ -657,7 +670,15 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 			fullData["info"] = "Each newly registered Player receives a gift of 20 points; A shared mod gets 1 point for each one registered and playing one battle with a bet; Start each days - 3:00 am, finish - 3:00 am next day."
 			fullData["Points"] = "points"
 		}
-		render(w, r, homepageTpl, "dueler.html", fullData)
+		switch r.RequestURI {
+		case "/page.html":
+			render(w, r, homepageTpl, "page.html", fullData)
+		case "/page2.html":
+			render(w, r, homepageTpl, "page2.html", fullData)
+		default:
+			render(w, r, homepageTpl, "dueler.html", fullData)
+		}
+
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}

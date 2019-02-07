@@ -1,190 +1,255 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <!-- Facebook Pixel Code -->
-    <script>
-        !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-                n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '347959536026617');
-        fbq('track', 'PageView');
-    </script>
-    <noscript>
-        <img height="1" width="1" src="https://www.facebook.com/tr?id=347959536026617&ev=PageView
-    &noscript=1" />
-    </noscript>
-    <!-- End Facebook Pixel Code -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dueler</title>
-    <link rel="stylesheet" href="/resources/stylecssdueler.css">
-    <link rel="icon" href="/resources/favicon.ico">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript">
-    function clickbuttoncont() {
-            var el = document.getElementById("buttoncontact");
-            var el2 = document.getElementById("textbuttoncontact");
-            var el3 = document.getElementById("contactinformation")
-            var el4 = document.getElementById("divbutton3").getElementsByTagName("div")[0];
-            var el5 = document.getElementById("contactinformation2")
-            if (el5.style.visibility == "visible")
-                el4.click();
-            if (el3.style.visibility != "visible") {
-                el.src = "/resources/imgindex/buttondown.png";
-                el2.style.color = "black"
-                el3.style.visibility = "visible";
-            } else {
-                el.src = "/resources/imgindex/buttonup.png";
-                el2.style.color = "white"
-                el3.style.visibility = "hidden";
-            }
-        }
-        function clickbuttonres() {
-            var el = document.getElementById("buttonproduct");
-            var el2 = document.getElementById("textbuttonproduct");
-            var el3 = document.getElementById("contactinformation2")
-            var el4 = document.getElementById("divbutton1").getElementsByTagName("div")[0];
-            var el5 = document.getElementById("contactinformation")
-            if (el5.style.visibility == "visible")
-                el4.click();
-            if (el3.style.visibility != "visible") {
-                el.src = "/resources/imgindex/buttondown.png";
-                el2.style.color = "black"
-                el3.style.visibility = "visible";
-            } else {
-                el.src = "/resources/imgindex/buttonup.png";
-                el2.style.color = "white"
-                el3.style.visibility = "hidden";
-            }
-        }
-    </script>
-</head>
-
-<body>
-        <a style="position:absolute; left:306px; top:30px;" href = "{{.Langref}}">
-                <img src="/resources/lang/{{.Lang}}.png" style="height: 36px;" >
-            </a>
-    <div id="divbutton1" value="1">
-        <div id="divbutton2" onclick="clickbuttoncont()">
-            <img id="buttoncontact" src="/resources/imgindex/buttonup.png"></img>
-            <a id="textbuttoncontact" class="texted centered">{{.CONTACTUS}}</a>
-        </div>
-        <div id="contactinformation">
-            <div class="marginclass"></div>
-            <div class="marginclass"></div>
-            <div class="marginclass"></div>
-            <div class="underline"></div>
-            <div class="marginclass"></div>
-            <div class="textedwhite">{{.Stanislav}}</div>
-            <div class="textedgray">{{.Techsupport}}</div>
-            <div class="marginclass"></div>
-            <div>
-                <img class="icons" src="/resources/imgindex/message.png"></img>
-                <a class="textedgraybigger marginpx">e-mail</a>
-            </div>
-            <div class="marginclass"></div>
-            <div class="underline"></div>
-            <div class="marginclass"></div>
-            <div class="textedwhite">{{.Andrey}}</div>
-            <div class="textedgray">{{.cofounder}}</div>
-            <div class="marginclass"></div>
-            <div>
-                <img class="icons" src="/resources/imgindex/message.png"></img>
-                <a class="textedgraybigger marginpx">e-mail</a>
-            </div>
-            <div class="marginclass"></div>
-            <div class="underline"></div>
-            <div class="marginclass"></div>
-            <div class="marginclass"></div>
-            <div class="textedgray">{{.networks}}</div>
-            <div class="marginclass"></div>
-            <a class="opacitychange" href="http://t.me/SagSaj"><img class="iconsbig" src="/resources/imgindex/telegram.png"></img></a>
-            <a class="opacitychange"> <img class="iconsbig" src="/resources/imgindex/linkedin.png"></img></a>
-            <a class="opacitychange" href="https://www.facebook.com/groups/1952174028425040/"><img class="iconsbig" src="/resources/imgindex/facebook.png"></img></a>
-            <div class="underline"></div>
-        </div>
-
-    </div>
-<div id="divbutton3">
-    <div id="divbutton2" onclick="clickbuttonres()">
-        <img id="buttonproduct" src="/resources/imgindex/buttonup.png"></img>
-        <a id="textbuttonproduct" class="texted centered">{{.PRODUCTS}}</a>
-    </div>
-
-    <div id="contactinformation2">
-        <div class="marginclass"></div>
-        <div class="marginclass"></div>
-        <div class="marginclass"></div>
-        <div class="underline"></div>
-        <div class="marginclass"></div>
-        <div class="marginclass"></div>
-
-        <div style="width:100%;height: 8px;"></div>
-        <a href="/{{.Refback}}" class="opacitychange"><img class="iconsbig2" src="/resources/imgindex/dueler.png"></img></a>
-        <div style="width:100%;height: 18px;"></div>
-        <div class="marginclass"></div>
-        <div class="underline"></div>
-
-        <div class="marginclass"></div>
-
-        <div class="marginclass"></div>
-        <div style="width:100%;height: 22px;"></div>
-        <a href="/challenger/{{.Refback}}" class="opacitychange"><img class="iconsbig3" src="/resources/imgindex/logonamewhite.png"></img></a>
-        <div style="width:100%;height: 18px;"></div>
-        <div class="marginclass"></div>
-        <div class="underline"></div>
-    </div>
-
-</div>
-<div id="divbutton4">
-
-    <div id="divbutton2100">
-            <a id="textbuttonregister" class="texted centered">{{.REGISTER}}</a>
-      <a href = "/account/register/{{.Refback}}" style=" text-decoration: none;">
-        <img id="buttoncontact" src="/resources/imgindex/buttonup.png"></img>
-      </a>
-        
-
-    </div>
-
-</div>
-<div id="divbutton5">
-        <div id="divbutton2100">
-            <a id="textbuttonforum" href="http://challenger.userforum.ru" style=" text-decoration: none;" class="texted centered" target="_blank">{{.FORUM}}</a>
-        </div>
-</div>
-<div id="divbutton6">
-        <div id="divbutton2100">
-            <a id="textbuttonhowitworks" class="texted centered" href="https://www.youtube.com/watch?v=nMO9b67ShoA" style=" text-decoration: none;" target="_blank">{{.HOWITWORKS}}</a>
-        </div>
-</div>
-<img id="logonamepic" src="/resources/imgindex/dueler.png"></img>
-<div id="liderboarddiv">
     
-        <p  class="texted">{{.LIDERBOARD}}</p>
-        <div></div>
-        {{range $i,$a := .PlayersPoints}}
-            <img  src="/resources/img/logicon.png"></img>
-            <div class="blockPlayer">
-                <a class="texted" style="width:300px;">{{$i}}. {{$a.Login}}</a><a class="texted" style="float: right;">{{$a.Balance}}&#160;{{$.Points}}</a>
-                <div style="width:100%;height: 4px;"></div>
-                <img src="/resources/imgdueler/line.png" style="height:4px;width:{{$a|Width}}px; display: block;"></img>
-            </div>
-            <div class="marginclass"></div>
-        {{end}}
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&amp;subset=latin-ext" rel="stylesheet">
+    <script type="text/javascript" src="jquery-latest.js">
+</script>
+<script type="text/javascript" src="jquery.tablesorter.js">
+</script>
+    <link href="resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="resources/css/font-awesome.min.css" rel="stylesheet">
+    <link href="resources/stylenew.css" rel="stylesheet">
+    
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <header class="site-header">
         
-</div>
-<div class="comingsoon" style="text-align:center;">
-    <a class="texted" > {{.info}} </a>
-</div>
+        <nav class="navbar navbar-default">
+			<div class="container">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse">
+					<span class="sr-only">Toggle Navigation</span>
+					<i class="fa fa-bars"></i>
+				</button>
+				<a href="index.html" class="navbar-brand">
+					<img src="resources/imgnew/logo.png" alt="Post">
+				</a>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-navbar-collapse">
+                    <ul class="nav navbar-nav main-navbar-nav">
+                        <li class="active"><a href="index.html" title="">ГЛАВНАЯ</a></li>
+                       
+                        <li><a href="page.html" title="">СКАЧАТЬ МОД</a></li>
+                        <li><a href="page2.html" title="">КОНТАКТЫ</a></li>
+                        <li><a href="http://challenger.userforum.ru/" title="">ФОРУМ</a></li>
+                    </ul>                           
+                </div><!-- /.navbar-collapse -->                
+				<!-- END MAIN NAVIGATION -->
+			</div>
+		</nav>        
+    </header>
+    <main class="site-main">
+        <section class="hero_area">
+            <div class="hero_content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h1>Тест приложения для дуэлей</h1>
+                            <h2><a href="#">СКАЧАТЬ</a></h2>
+                            <p style="text-align: center">Каждый вновь зарегистрированный Игрок получает в подарок 20 баллов; Поделившийся модом получает 1 балл за каждого зарегистрированного и сыгравшего один бой со ставкой; Старт каждый день- 3:00, финиш - 3:00 следующего дня.</p>
 
+
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+        </section>
+        <br><br><br>
+        <main class="site-main page-main">
+        <div class="container">
+            <div class="row">
+                <section class="page col-sm-9">
+                    <h2 class="page-title">ЧТО ТАКОЕ DUELER И КАК ОН РАБОТАЕТ</h2>
+                    <div class="entry">
+                        <iframe width="100%" height="400" src="https://www.youtube.com/embed/nMO9b67ShoA" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                        
+                    </div>
+                </section>
+                <aside class="sidebar col-sm-3">
+                    <div class="widget">
+                        <h4>ONLINE</h4>
+                        
+                    </div>
+                </aside>
+                <aside class="sidebar col-sm-3">
+                    <div class="widget">
+                    <h4>Таблица лидеров</h4>
+                    <table class="table_dark">
+  <tr>
+    <th>Имя</th>
+    <th>Очки</th>
+    
+    
+    </tr>
+  <tr>
+    <td>Вася</td>
+    <td>20.3</td>
+    
+    </tr>
+  <tr>
+    <td>Петя</td>
+    <td>50.2</td>
+    
+    </tr>
+  <tr>
+    <td>Андрей</td>
+    <td>25.4</td>
+    
+    </tr>
+  <tr>
+    <td>Ира</td>
+    <td>20.4</td>
+   
+    </tr>
+                        <tr>
+    <td>Вася</td>
+    <td>20.3</td>
+    
+    </tr>
+                        <tr>
+    <td>Вася</td>
+    <td>20.3</td>
+    
+    </tr>
+                        <tr>
+    <td>Вася</td>
+    <td>20.3</td>
+    
+    </tr>
+                        
+  </table>
+                    </div>
+                </aside>
+            
+        </div>
+            </div>
+    </main>
+        
+        
+        <section class="home-area">
+            <div class="home_content">
+                <div class="container">
+                    <div class="row">
+                        
+                        <div class="col-sm-9 home_bottom">
+                            <h2 class="sub_title">Вас заинтересовал "Дуэлянт"?</h2>
+                            <div class="clearfix"></div>
+                            <div class="row">
+                                <p>Тогда скачайте наше приложение и вы сможете добавить азарт в полюбившуюся игру.</p>
+                                
+                                <p>Выражаем надежду, что вам понравилась наша идея. Если для Вас не будет сложным, то поделитесь информацией о нас со своими друзьями, так мы сможем предоставить Вам больший выбор противника.
+                                </p>
+                                
+                                 <br><br>
+
+<div id="share">
+	<div class="like">Поделитесь с друзьями!</div>
+
+<div class="social" data-url="http://challenger.dueler.club" data-title="Кнопки поделиться в социальных сетях">
+		<a class="push facebook" data-id="fb"><i class="fa fa-facebook"></i> Facebook</a>
+		<a class="push vkontakte" data-id="vk"><i class="fa fa-vk"></i> Вконтакте</a>
+    </div>
+    
+	</div>
+
+                  
+                        </div>
+                        
+                        <br><br>
+                        
+                        <div class="col-sm-12"><h2 class="sub_title">События</h2></div>
+                        
+                        
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12 fbox">
+                    <img src="resources/imgnew/logo.png">
+                    <p class="text"></p>
+                    <ul class="list-inline">
+                        <li><a href="#"><i class="fa fa-facebook"></i></a></li> 
+                        <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                        <li><a href="#"><i class="fa fa-vk"></i></a></li>
+                    </ul>
+                </div>
+               
+                <div class="col-md-3 col-sm-6 col-xs-12 fbox">
+                    <ul class="list-line">
+                        <p style="color: deepskyblue">АНДРЕЙ</p>
+                        <p class="text">соискатель</p>
+                    
+                    <li><a href="#"><i class="fa fa-envelope"></i> E-mail:</a></li>
+                    <li><a href="#"><i class="fa fa-telegram"></i> Telegram:</a></li>
+                    </ul>
+                    
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12 fbox">
+                    <ul class="list-line">
+                        <p style="color: deepskyblue">СТАНИСЛАВ</p>
+                        <p class="text">тех.поддержка</p>
+                    
+                    <li><a href="#"><i class="fa fa-envelope"></i> E-mail:</a></li>
+                    <li><a href="#"><i class="fa fa-telegram"></i> Telegram:</a></li>
+                    </ul>
+                    
+                </div>
+            </div>
+        </div>
+        <div id="copyright">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <p class="pull-left">&copy; 2019 DUELER</p>
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="list-inline navbar-right">
+                            <li><a href="index.html">ГЛАВНАЯ</a></li>
+                            <li><a href="page.html">СКАЧАТЬ МОД</a></li>
+                            <li><a href="http://challenger.userforum.ru/">ФОРУМ</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="resources/js/bootstrap.min.js"></script>
+        <script src="resources/js/share.js"></script>
+    <script type="text/javascript">
+        $('.carousel[data-type="multi"] .item').each(function(){
+          var next = $(this).next();
+          if (!next.length) {
+            next = $(this).siblings(':first');
+          }
+          next.children(':first-child').clone().appendTo($(this));
+
+          for (var i=0;i<4;i++) {
+            next=next.next();
+            if (!next.length) {
+                next = $(this).siblings(':first');
+            }
+
+            next.children(':first-child').clone().appendTo($(this));
+          }
+        });        
+    </script>
 </body>
-
 </html>
