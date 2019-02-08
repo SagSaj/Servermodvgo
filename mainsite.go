@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	re "main/modules/RESTSITE"
+
 	//"fmt"
 	"os"
 )
@@ -10,6 +12,13 @@ import (
 //var s mongo.SessionGame
 func main() {
 	//mongo.InitiateSession()
+	os.Remove("testsite.log")
+	f, err := os.OpenFile("testsite.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
 	port := os.Getenv("PORT")
 	tlsos := os.Getenv("TLSUSE")
 	tls := false

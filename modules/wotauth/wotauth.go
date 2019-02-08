@@ -2,9 +2,10 @@ package wotauth
 
 import "net/http"
 import jsoniter "github.com/json-iterator/go"
+import "strconv"
 
 func VerifyWotID(ID int) (bool, string) {
-	r, err := http.Get("https://api.worldoftanks.ru/wot/account/info/?application_id=1416d3f7652ca060ae19ad1032f97c6a&fields=nickname&account_id=4260379")
+	r, err := http.Get("https://api.worldoftanks.ru/wot/account/info/?application_id=1416d3f7652ca060ae19ad1032f97c6a&account_id=" + strconv.Itoa(ID))
 	if err != nil {
 		return false, ""
 	}

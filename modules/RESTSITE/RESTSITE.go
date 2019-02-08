@@ -607,8 +607,8 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
-
-		l := subdmongo.GetTopPlayers(s)
+		l := subdmongo.GetTopPlayersLimit(s, 10)
+		//l := subdmongo.GetTopPlayers(s)
 		fullData := map[string]interface{}{}
 		//l[1].Balance / l[0].Balance * 300
 		if len(l) != 0 {

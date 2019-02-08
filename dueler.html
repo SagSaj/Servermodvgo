@@ -11,6 +11,7 @@
 </script>
 <script type="text/javascript" src="jquery.tablesorter.js">
 </script>
+    <link rel="icon" href="/resources/favicon.ico">
     <link href="resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="resources/css/font-awesome.min.css" rel="stylesheet">
     <link href="resources/stylenew.css" rel="stylesheet">
@@ -53,7 +54,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <h1>Тест приложения для дуэлей</h1>
-                            <h2><a href="#">СКАЧАТЬ</a></h2>
+                            <h2><a href="/wotmod/Dueler.zip">СКАЧАТЬ</a></h2>
                             <p style="text-align: center">Каждый вновь зарегистрированный Игрок получает в подарок 20 баллов; Поделившийся модом получает 1 балл за каждого зарегистрированного и сыгравшего один бой со ставкой; Старт каждый день- 3:00, финиш - 3:00 следующего дня.</p>
 
 
@@ -91,41 +92,13 @@
     
     
     </tr>
-  <tr>
-    <td>Вася</td>
-    <td>20.3</td>
-    
-    </tr>
-  <tr>
-    <td>Петя</td>
-    <td>50.2</td>
-    
-    </tr>
-  <tr>
-    <td>Андрей</td>
-    <td>25.4</td>
-    
-    </tr>
-  <tr>
-    <td>Ира</td>
-    <td>20.4</td>
-   
-    </tr>
-                        <tr>
-    <td>Вася</td>
-    <td>20.3</td>
-    
-    </tr>
-                        <tr>
-    <td>Вася</td>
-    <td>20.3</td>
-    
-    </tr>
-                        <tr>
-    <td>Вася</td>
-    <td>20.3</td>
-    
-    </tr>
+    {{range $i,$a := .PlayersPoints}}
+            <tr>
+                <td>{{$i}}. {{$a.Login}}</td>
+                <td>{{$.Points}}</td>
+                
+                </tr>
+        {{end}}
                         
   </table>
                     </div>

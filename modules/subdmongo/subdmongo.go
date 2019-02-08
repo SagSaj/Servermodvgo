@@ -441,12 +441,29 @@ func GetTopPlayers(col string) (l []LoginInformation) {
 	return
 
 }
+func GetTopPlayersLimit(col string, N int) (l []LoginInformation) {
+	session := GetMongoSession()
+	defer session.Close()
+	if col == "" {
+		col = "persons"
+	}
+	c := session.DB(dBName).C(col)
+	err = c.Find(nil).Sort("-balance").Limit(N).All(&l)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	return
+
+}
 func Clone() {
+
 	session := GetMongoSession()
 	defer session.Close()
 	var l []LoginInformation
 	c := session.DB(dBName).C("persons")
 	t := time.Now()
+	log.Println("to persons" + t.Format("2006-01-02"))
 	c2 := session.DB(dBName).C("persons" + t.Format("2006-01-02"))
 	err = c.Find(nil).All(&l)
 	if err != nil {
@@ -475,6 +492,7 @@ func UpdateAllForDefault() error {
 	defer session.Close()
 	//log.Println(result)
 	c := session.DB(dBName).C("persons")
+	log.Println("UpdateAll")
 	//_, err = c.Upsert(bson.M{"Login": login}, bson.M{"$set": bson.M{"LoseCount": result.LoseCount, "WinCount": result.LoseCount, "Balance": result.LoseCount}})
 	_, err = c.UpdateAll(nil, bson.M{"$set": bson.M{"losecount": 0, "wincount": 0, "balance": config.Conf.Drop_balance}})
 	//log.Println(GetBalance(login))
