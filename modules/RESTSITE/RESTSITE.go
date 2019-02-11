@@ -731,7 +731,7 @@ func GoServerListen(port string, tls bool) {
 		log.Fatalf("error opening file: %v", err)
 	}
 	defer f.Close()
-	//log.SetOutput(f)
+	log.SetOutput(f)
 	logger := log.New(f, "http: ", log.LstdFlags)
 	if port == "" {
 		port = ":" + serverString

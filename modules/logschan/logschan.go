@@ -1,6 +1,6 @@
 package logschan
 
-import "fmt"
+import "log"
 
 type Logger interface {
 	AddLog(params ...string) error
@@ -12,7 +12,7 @@ type Log struct {
 }
 
 func (l *Log) AddLog(params ...string) error {
-	fmt.Println(params)
+	log.Println(params)
 	return nil
 }
 func (l *Log) TakeLogs(params ...string) (string, error) {
