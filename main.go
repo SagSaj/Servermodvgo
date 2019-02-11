@@ -16,13 +16,7 @@ import (
 func main() {
 	timeoutdrop.Initialize()
 	//mongo.InitiateSession()
-	os.Remove("test.log")
-	f, err := os.OpenFile("test.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-	defer f.Close()
-	log.SetOutput(f)
+
 	port := os.Getenv("PORT")
 	tlsos := os.Getenv("TLSUSE")
 	tls := false

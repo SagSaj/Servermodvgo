@@ -1093,7 +1093,14 @@ func GoServerListen(port string, tls bool) {
 	Параметры от клиента: нет
 	Ответ сервера: строка вида v.1.0.0 */
 	//mapSit = make(map[string]MessageoutSit, 2)
-	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
+	os.Remove("test.log")
+	f, err := os.OpenFile("test.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+	//log.SetOutput(f)
+	logger := log.New(f, "http: ", log.LstdFlags)
 	if port == "" {
 		port = ":" + serverString
 	}

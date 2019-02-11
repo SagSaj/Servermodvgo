@@ -583,7 +583,9 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 			t = template.New("page2.html")
 		case "/dueler.html":
 		case "/":
-
+		default:
+			http.Redirect(w, r, "http://dueler.club/", 301)
+			return
 		}
 		//log.Println(r.URL)
 		//	name := path.Base(homepageHTML)
@@ -723,7 +725,14 @@ func GoServerListen(port string, tls bool) {
 	Параметры от клиента: нет
 	Ответ сервера: строка вида v.1.0.0 */
 	//mapSit = make(map[string]MessageoutSit, 2)
-	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
+	os.Remove("testsite.log")
+	f, err := os.OpenFile("testsite.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+	//log.SetOutput(f)
+	logger := log.New(f, "http: ", log.LstdFlags)
 	if port == "" {
 		port = ":" + serverString
 	}
