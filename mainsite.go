@@ -21,7 +21,7 @@ func main() {
 		tls = true
 	}
 	port = ":80"
-	port = "localhost:7023"
+	//port = "localhost:7023"
 	go re.GoServerListen(port, tls)
 	//var guessColor string
 	<-ch
