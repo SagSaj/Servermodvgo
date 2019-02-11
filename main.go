@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	//"log"
 	re "main/modules/REST"
 	"main/modules/timeoutdrop"
 
