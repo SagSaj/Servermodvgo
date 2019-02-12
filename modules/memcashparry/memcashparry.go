@@ -241,7 +241,9 @@ func DeleteLongTocken() {
 					activeExict = true
 					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(20) {
 						mutex.Lock()
+						log.Println("DeleteParry: " + strconv.Itoa(value2.ArenaID))
 						delete(ParryMems, index)
+
 						mutex.Unlock()
 						break
 					}
@@ -251,6 +253,7 @@ func DeleteLongTocken() {
 				for _, value2 := range value.Parres {
 					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(20) {
 						mutex.Lock()
+						log.Println("DeleteParry: " + strconv.Itoa(value2.ArenaID))
 						delete(ParryMems, index)
 						mutex.Unlock()
 						break

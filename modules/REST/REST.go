@@ -707,6 +707,8 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 					//subdmongo.AddReferencePoint(p.Login, false)
 					a.AddNewParry(value.FromAccountID, value.ToAccountID, value.BetValue)
 				}
+				temp := strconv.Itoa(value.ToAccountID)
+				log.Println(m.Token + " " + are + " " + temp)
 			}
 			if r.RequestURI == "/parry/reject/" {
 				massI := memp.GetIncoming(are, p.AccountID)
@@ -722,7 +724,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 				memp.VerifyReject(m.Token, are, value.ToAccountID, value.BetValue)
 			}
 			if r.RequestURI == "/parry/decline/" {
-				log.Println("In decline")
+				//log.Println("In decline")
 				massI := memp.GetPending(are, p.AccountID)
 				if len(massI) == 0 {
 					log.Println("Can't find parry")
@@ -730,10 +732,10 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				value := massI[0]
-				log.Println("Verifying")
+				//log.Println("Verifying")
 				temp := strconv.Itoa(value.ToAccountID)
-				log.Println(m.Token + " " + are + " " + temp)
 				memp.VerifyDecline(m.Token, are, value.ToAccountID, value.BetValue)
+				log.Println(m.Token + " " + are + " " + temp)
 				//memp.VerifyReject(m.Token, are, value.ToAccountID, value.BetValue)
 			}
 
@@ -768,15 +770,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 				memp.AddParry(res, strconv.Itoa(m.ArenaID), "incoming", m.ToAccountID, p.AccountID)
 				memp.AddParry(res2, strconv.Itoa(m.ArenaID), "pending", p.AccountID, m.ToAccountID)
 			}
-			/* a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
-			strs := a.GetEnemies(m.Token)
-			var massIds []int
-			for _, e := range strs {
-				igf, _ := strconv.Atoi(e)
-				massIds = append(massIds, igf)
-			} */
-
-			//
+			log.Println("Activate new parrY " + strconv.Itoa(m.ArenaID))
 		}
 		mo := Messageout{
 			Status: stat,

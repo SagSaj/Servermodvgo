@@ -16,9 +16,9 @@ func Initialize() {
 }
 func TimeCount() {
 	for {
-		log.Println("Run timeoutdrop")
-		log.Println(time.Now().UnixNano())
-		log.Println(t.AddDate(0, 0, config.Conf.Days_period).UnixNano())
+		//log.Println("Run timeoutdrop")
+		//log.Println(time.Now().UnixNano())
+		//log.Println(t.AddDate(0, 0, config.Conf.Days_period).UnixNano())
 		if time.Now().UnixNano() > t.AddDate(0, 0, config.Conf.Days_period).UnixNano() {
 			//DropNew
 			if t.Hour() == config.Conf.Time_reload {
