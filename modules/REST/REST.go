@@ -7,6 +7,7 @@ import (
 	//"encoding/json"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	ios "io/ioutil"
 	"log"
 	"main/modules/PersonStruct"
@@ -1075,7 +1076,8 @@ func logging(logger *log.Logger) func(http.Handler) http.Handler {
 				if !ok {
 					requestID = "unknown"
 				}
-				Myloger.AddLog(requestID, r.Method, r.URL.Path, r.RemoteAddr, r.UserAgent())
+				bodyBuffer, _ := ioutil.ReadAll(r.Body)
+				Myloger.AddLog(requestID, r.Method, r.URL.Path, r.RemoteAddr, r.UserAgent(), string(bodyBuffer))
 			}()
 			next.ServeHTTP(w, r)
 		})
