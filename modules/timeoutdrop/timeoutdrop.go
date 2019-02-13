@@ -21,14 +21,9 @@ func TimeCount() {
 		//log.Println(t.AddDate(0, 0, config.Conf.Days_period).UnixNano())
 		if time.Now().UnixNano() > t.AddDate(0, 0, config.Conf.Days_period).UnixNano() {
 			//DropNew
-			log.Println(time.Now().UnixNano())
-			log.Println(t.AddDate(0, 0, config.Conf.Days_period).UnixNano())
-			log.Println(t.Hour())
-			log.Println(config.Conf.Time_reload)
-			if t.Hour() == config.Conf.Time_reload {
+			if time.Now().Hour() == config.Conf.Time_reload {
 				log.Println("Clone and update")
-				subdmongo.Clone()
-				subdmongo.UpdateAllForDefault()
+				reload()
 				t = time.Date(t.Year(), t.Month(), t.Day(), int(0), int(0), int(0), int(0), time.UTC)
 			}
 		}
@@ -39,4 +34,8 @@ func TimeCount() {
 		}
 
 	}
+}
+func reload() {
+	subdmongo.Clone()
+	subdmongo.UpdateAllForDefault()
 }
