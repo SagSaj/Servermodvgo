@@ -306,7 +306,7 @@ func (a *ArenaService) AddArena(Toc string) *ArenaInformation {
 //Logs
 func (a *ArenaService) DeleteByTimeout() {
 	for key, e := range a.Arena {
-		if t.Now().Sub(e.DateTimeBeginArena).Minutes() > float64(2) && e.PossibleToClose {
+		if t.Now().Sub(e.DateTimeBeginArena).Minutes() > float64(20) && e.PossibleToClose {
 			a.DeleteArena(key)
 			continue
 		}

@@ -269,9 +269,9 @@ func ClassicLogin(w http.ResponseWriter, r *http.Request) {
 			//	var p PersonStruct.Person errors by found
 			p, err := PersonStruct.FindPersonByLogin(m.Login, m.Password)
 			if err != nil {
-				log.Println(err.Error())
+				log.Println("PersonLogin " + err.Error())
 				if err.Error() == "not found" {
-					mo := MessageError{Error: "WRONG_ACCOUNT_ID"}
+					mo := MessageError{Error: "WRONG_LOGIN"}
 					b, err := json.Marshal(mo)
 					if err != nil {
 						http.Error(w, err.Error(), 401)
@@ -568,18 +568,6 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 		massR := memp.GetRejected(strconv.Itoa(m.ArenaID), p.AccountID)
 		massD := memp.GetDeclined(strconv.Itoa(m.ArenaID), p.AccountID)
 		//
-		if len(massP) > 0 {
-			if time.Now().Sub(massP[0].CreatedAt).Minutes() > float64(2) {
-				massP = nil
-
-			}
-
-		}
-		if len(massI) > 0 {
-			if time.Now().Sub(massI[0].CreatedAt).Minutes() > float64(2) {
-				massI = nil
-			}
-		}
 		a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
 		if a == nil {
 			http.Error(w, "Arena didn't find", 402)
@@ -687,15 +675,18 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		stat := "ok"
-		memp.Clear(p.AccountID, strconv.Itoa(m.ArenaID))
+		//memp.Clear(p.AccountID, strconv.Itoa(m.ArenaID))
 		if m.ToAccountID == 0 {
 			//////////
 			//////////
-			log.Println(r.RequestURI)
+			//log.Println(r.RequestURI)
 			a, are := mem.Arena.FindArenaIDByAccountID(p.AccountID)
+			if a == nil {
+
+			}
 			if r.RequestURI == "/parry/activate/" {
 				massI := memp.GetIncoming(are, p.AccountID)
-				log.Println(m.Token + " " + are + " " + strconv.Itoa(p.AccountID))
+				//	log.Println(m.Token + " " + are + " " + strconv.Itoa(p.AccountID))
 				if len(massI) == 0 {
 					log.Println("Can't find parry")
 					log.Println(are)
@@ -713,7 +704,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			}
 			if r.RequestURI == "/parry/reject/" {
 				massI := memp.GetIncoming(are, p.AccountID)
-				log.Println(m.Token + " " + are + " " + strconv.Itoa(p.AccountID))
+				//log.Println(m.Token + " " + are + " " + strconv.Itoa(p.AccountID))
 				if len(massI) == 0 {
 					log.Println("Can't find parry")
 					http.Error(w, "Can't find parry", 400)
@@ -727,7 +718,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			if r.RequestURI == "/parry/decline/" {
 				//log.Println("In decline")
 				massI := memp.GetPending(are, p.AccountID)
-				log.Println(m.Token + " " + are + " " + strconv.Itoa(p.AccountID))
+				//.Println(m.Token + " " + are + " " + strconv.Itoa(p.AccountID))
 				if len(massI) == 0 {
 					log.Println("Can't find parry")
 					http.Error(w, "Can't find parry", 400)
