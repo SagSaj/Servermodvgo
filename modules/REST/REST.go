@@ -1022,7 +1022,7 @@ func HandleFunctionGetHashMod(w http.ResponseWriter, r *http.Request) {
 		}
 		str, err := subdmongo.GenerateReference(p.Login)
 		if err != nil {
-			log.Println(err.Error())
+			//log.Println(err.Error())
 			http.Error(w, err.Error(), 400)
 		}
 		stans := HTTPserverpathGetMod + str
