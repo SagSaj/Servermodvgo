@@ -21,6 +21,10 @@ func TimeCount() {
 		//log.Println(t.AddDate(0, 0, config.Conf.Days_period).UnixNano())
 		if time.Now().UnixNano() > t.AddDate(0, 0, config.Conf.Days_period).UnixNano() {
 			//DropNew
+			log.Println(time.Now().UnixNano())
+			log.Println(t.AddDate(0, 0, config.Conf.Days_period).UnixNano())
+			log.Println(t.Hour())
+			log.Println(config.Conf.Time_reload)
 			if t.Hour() == config.Conf.Time_reload {
 				log.Println("Clone and update")
 				subdmongo.Clone()

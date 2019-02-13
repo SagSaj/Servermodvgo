@@ -6,7 +6,7 @@ import time
 import urllib2
 # http://134.17.162.92:8000http://148.251.241.66:5050
 #var = "http://178.124.139.97:8000"
-var = "http://localhost:8000"
+var = "http://178.124.139.97:8000"
 ArenaID = 100000001
 # print(requests.get(var+"/currentVersion/").text)
 # print(requests.post(var+"/account/register/",
@@ -63,15 +63,15 @@ g_connectionManager.initiateConnection(
 #time.sleep(100)
 
 
-###############
-#s=json.loads(requests.post(var+"/account/login/",
-#                                 json={'accountID': 123224,
-#                                       'login': 'client12412341',
-#                                       'auth_method': 'password',
-#                                       'token': '', 'password': 'client111'}).text)
-#Token1 = s["token"]
-#print(requests.post(var+"/gethashmod/",
-#                    json={'token': Token1}).text)
+##############
+s=json.loads(requests.post(var+"/account/login/",
+                                json={'accountID': 123224,
+                                      'login': 'client12412341',
+                                      'auth_method': 'password',
+                                      'token': '', 'password': 'client111'}).text)
+Token1 = s["token"]
+print(requests.post(var+"/gethashmod/",
+                   json={'token': Token1}).text)
 # for i in range(200,300):
 
 #       print(requests.post(var+"/account/register/",
@@ -91,57 +91,57 @@ g_connectionManager.initiateConnection(
 # for i in range(0,100):
 #     print(requests.post(var+"/arena/enter/", json={'token': tokens[i],
 #                                                             'arenaID':  i+random.randint(0, 10)+1000000}).text)
-# time.sleep(2)
-# s = json.loads(requests.post(var+"/account/login/",
-#                              json={'accountID': 102, 'login': 'client102', 'auth_method': 'password', 'token': '', 'password': 'client102'}).text)
-# time.sleep(2)
-# Token2 = s["token"]
-# print(requests.post(var+"/arena/enter/", json={'token': Token1,
-#                                                         'arenaID': ArenaID}).text)
-# time.sleep(2)
+time.sleep(2)
+s = json.loads(requests.post(var+"/account/login/",
+                             json={'accountID': 102, 'login': 'client102', 'auth_method': 'password', 'token': '', 'password': 'client102'}).text)
+time.sleep(2)
+Token2 = s["token"]
+print(requests.post(var+"/arena/enter/", json={'token': Token1,
+                                                        'arenaID': ArenaID}).text)
+time.sleep(2)
 
-# time.sleep(2)
-# print(requests.post(var+"/arena/situation/", json={'token': Token1,
-#                                                    'arenaID': ArenaID, "pending": [], "active": [],
-#                                                                     "incoming": [], "rejected": [], "declined": []}).text)
-# time.sleep(2)
-# print(requests.post(var+"/parry/", json={'token': Token2,
-#                                          'arenaID': ArenaID,
-#                                                                "toAccountID": 101,
-#                                                                "parryType": 'teamvictory',
-#                                                                "betValue":2
-#                                                                }).text)
-# time.sleep(2)
-# print(requests.post(var+"/arena/situation/", json={'token': Token1,
-#                                                    'arenaID': ArenaID, "pending": [], "active": [],
-#                                                                     "incoming": [], "rejected": [], "declined": []}).text)
-# time.sleep(2)
-# s = json.loads(requests.post(var+"/arena/situation/", json={'token': Token1,
-#                                                             'arenaID': ArenaID, "pending": [], "active": [],
-#                                                             "incoming": [], "rejected": [], "declined": []}).text)
-# betid = s["incoming"][0]["id"]
-# print(requests.post(var+"/parry/activate/", json={'token': Token1,
-#                                                           'id': betid,
-#                                                           "betID": betid,
-#                                                           }).text)
-# time.sleep(2)
-# print(requests.post(var+"/arena/situation/", json={'token': Token1,
-#                                                    'arenaID': ArenaID, "pending": [], "active": [],
-#                                                                     "incoming": [], "rejected": [], "declined": []}).text)
-# time.sleep(2)
-# print(requests.post(var+"/arena/situation/", json={'token': Token2,
-#                                                    'arenaID': ArenaID, "pending": [], "active": [],
-#                                                                     "incoming": [], "rejected": [], "declined": []}).text)
-# time.sleep(10)
-# print(requests.post(var+"/arena/result/", json={'token': Token2,
-#                                                 'arenaID': ArenaID,
-#                                                                  "data": {"victory": False}
-#                                                                }).text)
-# time.sleep(1)
-# print(requests.post(var+"/arena/result/", json={'token': Token1,
-#                                                 'arenaID': ArenaID,
-#                                                                  "data": {"victory": True}
-#                                                                  }).text)
+time.sleep(2)
+print(requests.post(var+"/arena/situation/", json={'token': Token1,
+                                                   'arenaID': ArenaID, "pending": [], "active": [],
+                                                                    "incoming": [], "rejected": [], "declined": []}).text)
+time.sleep(2)
+print(requests.post(var+"/parry/", json={'token': Token2,
+                                         'arenaID': ArenaID,
+                                                               "toAccountID": 101,
+                                                               "parryType": 'teamvictory',
+                                                               "betValue":2
+                                                               }).text)
+time.sleep(2)
+print(requests.post(var+"/arena/situation/", json={'token': Token1,
+                                                   'arenaID': ArenaID, "pending": [], "active": [],
+                                                                    "incoming": [], "rejected": [], "declined": []}).text)
+time.sleep(2)
+s = json.loads(requests.post(var+"/arena/situation/", json={'token': Token1,
+                                                            'arenaID': ArenaID, "pending": [], "active": [],
+                                                            "incoming": [], "rejected": [], "declined": []}).text)
+betid = s["incoming"][0]["id"]
+print(requests.post(var+"/parry/activate/", json={'token': Token1,
+                                                          'id': betid,
+                                                          "betID": betid,
+                                                          }).text)
+time.sleep(2)
+print(requests.post(var+"/arena/situation/", json={'token': Token1,
+                                                   'arenaID': ArenaID, "pending": [], "active": [],
+                                                                    "incoming": [], "rejected": [], "declined": []}).text)
+time.sleep(2)
+print(requests.post(var+"/arena/situation/", json={'token': Token2,
+                                                   'arenaID': ArenaID, "pending": [], "active": [],
+                                                                    "incoming": [], "rejected": [], "declined": []}).text)
+time.sleep(10)
+print(requests.post(var+"/arena/result/", json={'token': Token2,
+                                                'arenaID': ArenaID,
+                                                                 "data": {"victory": False}
+                                                               }).text)
+time.sleep(1)
+print(requests.post(var+"/arena/result/", json={'token': Token1,
+                                                'arenaID': ArenaID,
+                                                                 "data": {"victory": True}
+                                                                 }).text)
 
 
 #print(requests.post("http://localhost:8000/account/login/",

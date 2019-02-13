@@ -418,7 +418,7 @@ func AddReferencePoint(login string) {
 
 	c2 := session.DB(dBName).C("persons")
 	//_, err = c.Upsert(bson.M{"Login": login}, bson.M{"$set": bson.M{"LoseCount": result.LoseCount, "WinCount": result.LoseCount, "Balance": result.LoseCount}})
-	err = c2.Update(bson.M{"login": p.Login}, bson.M{"$add": bson.M{"balance": 1}})
+	err = c2.Update(bson.M{"login": p.Login}, bson.M{"$inc": bson.M{"balance": 1}})
 	//log.Println(GetBalance(login))
 	if err != nil {
 		log.Println(err)
