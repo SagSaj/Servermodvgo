@@ -48,6 +48,7 @@ func (p *Parry) ReplaceADV(r StructForREST, typeP string) {
 	for i := 0; i < len(p.Parres); i += 1 {
 		if p.Parres[i] == r {
 			p.Types[i] = typeP
+			p.Parres[i].ParryType = typeP
 			return
 		}
 	}
@@ -188,7 +189,7 @@ func VerifyReject(Tocken string, ArenaID string, accountIDTo int, bet float32) {
 		for index, value := range p.Types {
 			log.Println(value + " " + strconv.Itoa(p.To[index]) + " " + strconv.Itoa(accountIDTo))
 			if value == "pending" && p.From[index] == accountIDTo {
-				p.ReplaceADV(p.Parres[index], "declined")
+				p.ReplaceADV(p.Parres[index], "rejected")
 			}
 			if value == "incoming" && p.To[index] == accountIDTo {
 				p.ReplaceADV(p.Parres[index], "rejected")
@@ -205,7 +206,7 @@ func VerifyDecline(Tocken string, ArenaID string, accountIDTo int, bet float32) 
 
 			}
 			if value == "incoming" && p.To[index] == accountIDTo {
-				p.ReplaceADV(p.Parres[index], "rejected")
+				p.ReplaceADV(p.Parres[index], "declined")
 			}
 		}
 	}
@@ -239,7 +240,7 @@ func DeleteLongTocken() {
 			for index2, value2 := range value.Parres {
 				if value.Types[index2] == "active" {
 					activeExict = true
-					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(20) {
+					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(35) {
 						mutex.Lock()
 						log.Println("DeleteParry: " + strconv.Itoa(value2.ArenaID))
 						delete(ParryMems, index)
@@ -251,7 +252,7 @@ func DeleteLongTocken() {
 			}
 			if !activeExict {
 				for _, value2 := range value.Parres {
-					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(20) {
+					if t.Now().Sub(value2.CreatedAt).Minutes() > float64(35) {
 						mutex.Lock()
 						log.Println("DeleteParry: " + strconv.Itoa(value2.ArenaID))
 						delete(ParryMems, index)

@@ -47,7 +47,7 @@ temp=requests.post(var+"/arena/situation/", json={'token': Token1,
 print(temp)
 s = json.loads(temp)
 betid = s["incoming"][0]["id"]
-print(requests.post(var+"/parry/activate/", json={'token': Token1,
+print(requests.post(var+"/parry/reject/", json={'token': Token1,
                                                           'id': betid,
                                                           "betID": betid,
                                                           }).text)

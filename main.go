@@ -26,7 +26,7 @@ func main() {
 	}
 	port = ":8000"
 	//port1 := ":7000"
-	//port = "localhost:8000"
+	port = "localhost:8000"
 	go re.GoServerListen(port, tls)
 	<-ch
 	//go res.GoServerListen(port1, tls)
