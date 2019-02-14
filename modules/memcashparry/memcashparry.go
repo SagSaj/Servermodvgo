@@ -48,7 +48,7 @@ func (p *Parry) ReplaceADV(r StructForREST, typeP string) {
 	for i := 0; i < len(p.Parres); i += 1 {
 		if p.Parres[i] == r {
 			p.Types[i] = typeP
-			p.Parres[i].ParryType = typeP
+			p.Parres[i].Status = typeP
 			return
 		}
 	}

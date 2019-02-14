@@ -218,9 +218,10 @@ func ClassicLogin(w http.ResponseWriter, r *http.Request) {
 		Password   string `json:"password"` // в любом запросе будет ЛИБО токен ЛИБО пароль
 	}
 	type Messageout struct {
-		Token   string  `json:"token"`
-		Balance float32 `json:"balance"`
-		Status  string  `json:"status"`
+		Token      string  `json:"token"`
+		Balance    float32 `json:"balance"`
+		Status     string  `json:"status"`
+		Tournament int     `json:"tournament"`
 	}
 	var m Message
 	//LogString(r.RequestURI, "Login")
@@ -250,9 +251,10 @@ func ClassicLogin(w http.ResponseWriter, r *http.Request) {
 			} else {
 				if p.AccountID == m.AccountID {
 					mo := Messageout{
-						Balance: p.Balance,
-						Status:  "ok",
-						Token:   p.Tocken,
+						Balance:    p.Balance,
+						Status:     "ok",
+						Token:      p.Tocken,
+						Tournament: subdmongo.Position(p.Balance),
 					}
 					b, err := json.Marshal(mo)
 					if err == nil {
@@ -301,9 +303,10 @@ func ClassicLogin(w http.ResponseWriter, r *http.Request) {
 				}
 
 				mo := Messageout{
-					Balance: p.Balance,
-					Status:  "ok",
-					Token:   p.Tocken,
+					Balance:    p.Balance,
+					Status:     "ok",
+					Token:      p.Tocken,
+					Tournament: subdmongo.Position(p.Balance),
 				}
 				b, err := json.Marshal(mo)
 				if err == nil {
@@ -868,9 +871,10 @@ func HandleFunctionArenaResult(w http.ResponseWriter, r *http.Request) {
 		Data    map[string]bool `json:"data"`
 	}
 	type Messageout struct {
-		Victory []StructForREST `json:"victory"`
-		Defeat  []StructForREST `json:"defeat"`
-		Balance float32         `json:"balance"`
+		Victory    []StructForREST `json:"victory"`
+		Defeat     []StructForREST `json:"defeat"`
+		Balance    float32         `json:"balance"`
+		Tournament int             `json:"tournament"`
 	}
 	var m Message
 	if r.Method == "POST" {
@@ -925,9 +929,10 @@ func HandleFunctionArenaResult(w http.ResponseWriter, r *http.Request) {
 		if ok {
 
 			mo = Messageout{
-				Victory: massVictory,
-				Defeat:  massLose,
-				Balance: p.Balance,
+				Victory:    massVictory,
+				Defeat:     massLose,
+				Balance:    p.Balance,
+				Tournament: subdmongo.Position(p.Balance),
 			}
 		}
 
