@@ -148,10 +148,10 @@ func IsAddParry(ArenaID string, ToAccountID int, FromAccountID int) bool {
 		return false
 	} else {
 		for index, value := range p.To {
-			if value == ToAccountID && FromAccountID == p.From[index] {
+			if value == ToAccountID && FromAccountID == p.From[index] && (p.Types[index] == "incoming" || p.Types[index] == "pending" || p.Types[index] == "active") {
 				return true
 			}
-			if value == FromAccountID && ToAccountID == p.From[index] {
+			if value == FromAccountID && ToAccountID == p.From[index] && (p.Types[index] == "incoming" || p.Types[index] == "pending" || p.Types[index] == "active") {
 				return true
 			}
 		}
@@ -163,9 +163,10 @@ func VerifyActive(ArenaID string, accountIDTo int, bet float32) bool {
 	p, ok := ParryMems[ArenaID]
 	if ok {
 		//a := mem.Arena.FindArena(ArenaID)
+		log.Println(len(p.Types))
 		okas := false
 		for index, value := range p.Types {
-			//log.Println(p.Parres[index])
+			log.Println(value + " pto " + strconv.Itoa(p.To[index]) + " p.From[index] " + strconv.Itoa(p.From[index]) + " accountto " + strconv.Itoa(accountIDTo))
 			if value == "pending" && p.From[index] == accountIDTo {
 				okas = true
 				p.ReplaceADV(p.Parres[index], "active")
@@ -176,6 +177,7 @@ func VerifyActive(ArenaID string, accountIDTo int, bet float32) bool {
 			}
 		}
 		if okas && ok {
+
 			return true
 			//a.AddNewParry(pers.AccountID, accountIDTo, bet)
 		}
@@ -187,7 +189,7 @@ func VerifyReject(Tocken string, ArenaID string, accountIDTo int, bet float32) {
 	p, ok := ParryMems[ArenaID]
 	if ok {
 		for index, value := range p.Types {
-			log.Println(value + " " + strconv.Itoa(p.To[index]) + " " + strconv.Itoa(accountIDTo))
+
 			if value == "pending" && p.From[index] == accountIDTo {
 				p.ReplaceADV(p.Parres[index], "rejected")
 			}

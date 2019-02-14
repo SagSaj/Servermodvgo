@@ -686,7 +686,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			}
 			if r.RequestURI == "/parry/activate/" {
 				massI := memp.GetIncoming(are, p.AccountID)
-				//	log.Println(m.Token + " " + are + " " + strconv.Itoa(p.AccountID))
+				//log.Println(m.Token + " are " + are + " accid" + strconv.Itoa(p.AccountID) + " len " + strconv.Itoa(len(massI)))
 				if len(massI) == 0 {
 					log.Println("Can't find parry")
 					log.Println(are)
@@ -697,7 +697,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 				value := massI[0]
 
 				if memp.VerifyActive(are, value.ToAccountID, value.BetValue) {
-					//subdmongo.AddReferencePoint(p.Login, false)
+					log.Println("Start new arena")
 					a.AddNewParry(value.FromAccountID, value.ToAccountID, value.BetValue)
 				}
 
