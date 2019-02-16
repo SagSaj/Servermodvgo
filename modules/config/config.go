@@ -16,9 +16,6 @@ type StConfig struct {
 
 var Conf StConfig
 
-func init() {
-	Config_init("/modules/config/config.json")
-}
 func Config_init(path string) *StConfig {
 	dir, _ := filepath.Abs("./")
 	raw, err := ioutil.ReadFile(dir + path)

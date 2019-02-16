@@ -470,7 +470,7 @@ func Clone() {
 		log.Println(err)
 		return
 	}
-	for li := range l {
+	for _, li := range l {
 		c2.Insert(&li)
 	}
 	return

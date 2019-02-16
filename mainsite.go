@@ -2,6 +2,7 @@ package main
 
 import (
 	//"log"
+	"main/modles/config"
 	re "main/modules/RESTSITE"
 
 	//"fmt"
@@ -12,7 +13,7 @@ import (
 //var s mongo.SessionGame
 func main() {
 	//mongo.InitiateSession()
-
+	config.Config_init("/modules/config/config.json")
 	port := os.Getenv("PORT")
 	tlsos := os.Getenv("TLSUSE")
 	tls := false

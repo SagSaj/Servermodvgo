@@ -4,7 +4,7 @@ import (
 	//"log"
 	re "main/modules/REST"
 	"main/modules/timeoutdrop"
-
+	"main/modles/config"
 	//	res "RESTSITE"
 	//"fmt"
 	"os"
@@ -14,6 +14,7 @@ import (
 
 //var s mongo.SessionGame
 func main() {
+	config.Config_init("/modules/config/config.json")
 	timeoutdrop.Initialize()
 	//mongo.InitiateSession()
 
