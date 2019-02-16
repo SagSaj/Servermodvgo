@@ -24,7 +24,7 @@ func TimeCount() {
 			if time.Now().Hour() == config.Conf.Time_reload {
 				log.Println("Clone and update")
 				reload()
-				t = time.Date(t.Year(), t.Month(), t.Day(), int(0), int(0), int(0), int(0), time.UTC)
+				t = time.Date(time.Now().Year(),time.Now().Month(), time.Now().Day(), int(0), int(0), int(0), int(0), time.UTC)
 			}
 		}
 
