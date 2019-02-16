@@ -1,8 +1,12 @@
 package wotauth
 
-import "net/http"
-import jsoniter "github.com/json-iterator/go"
-import "strconv"
+import (
+	"log"
+	"net/http"
+	"strconv"
+
+	jsoniter "github.com/json-iterator/go"
+)
 
 func VerifyWotID(ID int) (bool, string) {
 	r, err := http.Get("https://api.worldoftanks.ru/wot/account/info/?application_id=1416d3f7652ca060ae19ad1032f97c6a&account_id=" + strconv.Itoa(ID))
@@ -15,7 +19,9 @@ func VerifyWotID(ID int) (bool, string) {
 	if err != nil {
 		return false, ""
 	}
+
 	jsoniter.ConfigFastest.Unmarshal(buf, &f)
+	log.Println("auth " + f.ToString())
 	if f.Get("status").ToString() == "error" {
 		return false, ""
 	}
