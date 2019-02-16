@@ -570,6 +570,7 @@ func add(x, y int) int {
 	return x + y
 }
 func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
+			s := ""
 	if r.Method == "GET" {
 		t := template.New("dueler.html")
 		homepageHTML := "dueler.html"
@@ -584,7 +585,14 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 		case "/dueler.html":
 		case "/":
 		default:
+			isd := strings.TrimPrefix(r.RequestURI, "/")
+			_, err := time.Parse("2006-01-02", isd)
+			if err == nil {
+				s = isd
+				//fmt.Println(s)
+			} else {
 			http.Redirect(w, r, "http://dueler.club/", 301)
+			}
 			return
 		}
 		//log.Println(r.URL)
@@ -598,7 +606,7 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 		//	push(w, "/resources/img/background.png")
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		s := ""
+
 		//fmt.Println(r.RequestURI)
 		if r.RequestURI != "/" {
 			isd := strings.TrimPrefix(r.RequestURI, "/")
