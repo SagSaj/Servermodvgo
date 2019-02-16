@@ -95,7 +95,7 @@ func HandleFunctionRegistration(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
-		//res2B, _ := json.Marshal(m)
+		res2B, _ := json.Marshal(m)
 		LogString(string(res2B), "registration")
 		if m.AuthMethod == "password" {
 			//	var p PersonStruct.Person
@@ -310,7 +310,7 @@ func ClassicLogin(w http.ResponseWriter, r *http.Request) {
 				}
 				b, err := json.Marshal(mo)
 				if err == nil {
-						LogString(string(b), "Login")
+					LogString(string(b), "Login")
 					w.Write(b)
 				} else {
 					//	LogString(string(b), "Login")
@@ -446,8 +446,8 @@ func HandleFunctionArenaEnter(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
-			res2B, _ := json.Marshal(m)
-			LogString(string(res2B), "Enter")
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B), "Enter")
 
 		//
 		a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
@@ -470,7 +470,7 @@ func HandleFunctionArenaEnter(w http.ResponseWriter, r *http.Request) {
 		}
 		b, err := json.Marshal(mo)
 		if err == nil {
-				LogString(string(b), "Enter")
+			LogString(string(b), "Enter")
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -538,7 +538,7 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
-		//res2B, _ := json.Marshal(m)
+		res2B, _ := json.Marshal(m)
 		LogString(string(res2B), "Situation")
 		p, ok := PersonStruct.FindPersonByToken(m.Token)
 		if !ok {
@@ -663,8 +663,8 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
-		//res2B, _ := json.Marshal(m)
-			LogString(string(res2B), "Parry")
+		res2B, _ := json.Marshal(m)
+		LogString(string(res2B), "Parry")
 		//Verify
 		p, ok := PersonStruct.FindPersonByToken(m.Token)
 		if !ok {
@@ -774,7 +774,7 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 		b, err := json.Marshal(mo)
 
 		if err == nil {
-				LogString(string(b), "Parry")
+			LogString(string(b), "Parry")
 			w.Write(b)
 		} else {
 			http.Error(w, err.Error(), 400)
@@ -815,7 +815,7 @@ func HandleFunctionArenaQuit(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 400)
 			return
 		}
-		//res2B, _ := json.Marshal(m)
+		res2B, _ := json.Marshal(m)
 		LogString(string(res2B), "Quit")
 		//
 		a, ok := mem.Arena.FindArenaEnd(strconv.Itoa(m.ArenaID))
@@ -898,7 +898,7 @@ func HandleFunctionArenaResult(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
-		//res2B, _ := json.Marshal(m)
+		res2B, _ := json.Marshal(m)
 		LogString(string(res2B), "result")
 		//
 		a := mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
