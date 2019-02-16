@@ -3,8 +3,9 @@ package main
 import (
 	//"log"
 	re "main/modules/REST"
+	"main/modules/config"
 	"main/modules/timeoutdrop"
-	"main/modles/config"
+
 	//	res "RESTSITE"
 	//"fmt"
 	"os"
