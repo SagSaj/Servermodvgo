@@ -821,7 +821,7 @@ func HandleFunctionArenaQuit(w http.ResponseWriter, r *http.Request) {
 		a, ok := mem.Arena.FindArenaEnd(strconv.Itoa(m.ArenaID))
 		stans := "ok"
 		if !ok {
-			stans = "INVALID_TOKEN"
+			stans = "ARENA_NOT_FOUND"
 		} else {
 			a.TokenLoseWithoutTeam(m.Token)
 		}
