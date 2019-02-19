@@ -38,7 +38,7 @@ func DeleteLongTocken() {
 		}
 
 		for key, e := range ServicePerson {
-			if time.Now().Sub(e.TimeActivity).Minutes() > float64(180) {
+			if time.Now().Sub(e.TimeActivity).Hours() > float64(24*4) {
 				delete(ServicePerson, key)
 			}
 		}
@@ -183,8 +183,10 @@ func AddAccountIDLogIN(Token string, AccountID int) {
 	if !ok {
 		log.Println("Bad  tocken " + Token + " in registration")
 	}
+
 	p.PersonInf.AccountID = AccountID
 	mutex.Lock()
+	mongo.AddIdAndName(p.PersonInf.Login, AccountID)
 	ServicePerson[Token] = &PersonService{PersonInf: p.PersonInf, TimeActivity: time.Now()}
 	mutex.Unlock()
 }

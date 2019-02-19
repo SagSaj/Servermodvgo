@@ -169,6 +169,22 @@ func RegistrNewPersonWithID(login, password string, ID int) (LoginInformation, e
 	}
 	return l, nil
 }
+func AddIdAndName(login string, ID int) error {
+	_, s := wotauth.VerifyWotID(ID)
+	session := GetMongoSession()
+	defer session.Close()
+
+	//log.Println(result)
+	c := session.DB(dBName).C("persons")
+	//_, err = c.Upsert(bson.M{"Login": login}, bson.M{"$set": bson.M{"LoseCount": result.LoseCount, "WinCount": result.LoseCount, "Balance": result.LoseCount}})
+	err = c.Update(bson.M{"login": login}, bson.M{"$set": bson.M{"nameinwot": s, "idaccount": ID}})
+	//log.Println(GetBalance(login))
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
 
 //FindPerson fp
 func FindPerson(login, password string) (LoginInformation, error) {
