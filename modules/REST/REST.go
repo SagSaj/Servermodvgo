@@ -993,6 +993,18 @@ func HandleFunctionStatAllBets(w http.ResponseWriter, r *http.Request) {
 
 const HTTPserverpathGetMod = "http://challenger.dueler.club/account/register/"
 
+func HandleFunctionCurrentVersion(w http.ResponseWriter, r *http.Request) {
+	type Messageout struct {
+		CurrentVersion string `json:"version"`
+	}
+	mo := Messageout{CurrentVersion: conf.Conf.Version}
+	b, err := json.Marshal(mo)
+	if err != nil {
+		http.Error(w, err.Error(), 401)
+	} else {
+		w.Write(b)
+	}
+}
 func HandleFunctionGetHashMod(w http.ResponseWriter, r *http.Request) {
 
 	type Message struct {
@@ -1113,9 +1125,7 @@ func GoServerListen(port string, tls bool) {
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  15 * time.Second,
 	}
-	router.Handle("/currentVersion/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, conf.Conf.Version)
-	})) //tested
+	router.Handle("/currentVersion/", http.HandlerFunc(HandleFunctionCurrentVersion)) //tested
 	//http.HandleFunc("/wotmod/", HandleFunctionGetMod)
 	router.Handle("/account/login/", http.HandlerFunc(HandleFunctionLogin))
 	//http.HandleFunc("/account/register/", HandleFunctionRegistration)
