@@ -7,17 +7,24 @@ import urllib2
 # http://134.17.162.92:8000http://148.251.241.66:5050
 #var = "http://178.124.139.97:8000"
 var = "http://localhost:8000"
+# print(requests.post(var+"/account/register/",
+#                       json={'accountID': 1, 'login': 'client11@som.nu', 'auth_method': 'password', 'token': '', 'password': 'client111', 'balance': 100}).text)
+
+# print(requests.post(var+"/account/register/",
+#                       json={'accountID': 2, 'login': 'client22@som.nu', 'auth_method': 'password', 'token': '', 'password': 'client111', 'balance': 100}).text)
+
+
 ArenaID = random.randint(1, 99999999999)
 s=json.loads(requests.post(var+"/account/login/",
-                                json={'accountID': 123123,
-                                      'login': 'client13@som.nu',
+                                json={'accountID': 1,
+                                      'login': 'client11@som.nu',
                                       'auth_method': 'password',
                                       'token': '', 'password': 'client111'}).text)
 Token1 = s["token"]
 print("Token1 "+ Token1)
 time.sleep(1)
 s = json.loads(requests.post(var+"/account/login/",
-                             json={'accountID': 123121, 'login': 'client11@som.nu', 'auth_method': 'password', 'token': '', 'password': 'client111'}).text)
+                             json={'accountID': 2, 'login': 'client22@som.nu', 'auth_method': 'password', 'token': '', 'password': 'client111'}).text)
 time.sleep(1)
 Token2 = s["token"]
 print("Token2 "+ Token2)
@@ -32,7 +39,7 @@ print(requests.post(var+"/arena/situation/", json={'token': Token1,
 time.sleep(2)
 print("parry "+ requests.post(var+"/parry/", json={'token': Token2,
                                          'arenaID': ArenaID,
-                                                               "toAccountID": 123123,
+                                                               "toAccountID": 1,
                                                                "parryType": 'teamvictory',
                                                                "betValue":2
                                                                }).text)
@@ -60,7 +67,7 @@ time.sleep(2)
 
 print("parry "+ requests.post(var+"/parry/", json={'token': Token2,
                                          'arenaID': ArenaID,
-                                                               "toAccountID": 123123,
+                                                               "toAccountID": 1,
                                                                "parryType": 'teamvictory',
                                                                "betValue":2
                                                                }).text)
@@ -150,7 +157,7 @@ print("status 2"+temp)
 #     
 # print(requests.get(var+"/currentVersion/").text)
 # print(requests.post(var+"/account/register/",
-#                      json={'accountID': 123123, 'login': 'client', 'auth_method': 'password', 'token': '', 'password': 'client111', 'balance': 100}).text)
+#                      json={'accountID': 1, 'login': 'client', 'auth_method': 'password', 'token': '', 'password': 'client111', 'balance': 100}).text)
 
 
 # {"accountIDs":["20388892","195331"],"pending":[],"incoming":[],"active":[{"id":3,"type":"teamvictory","fromAccountID":"195331","toAccountID":"20388892","betValue":28,"status":"active","arenaID":"12307775789379236","createdAt":"2018-11-10T10:12:04.131Z","updatedAt":"2018-11-10T10:12:23.171Z","deletedAt":null}],"rejected":[],"declined":[]}
@@ -167,4 +174,4 @@ print("status 2"+temp)
 
 ##############
 #print(requests.post(var+"/account/register/",
-#                      json={'accountID': 123121, 'login': 'client11@som.nu', 'auth_method': 'password', 'token': '', 'password': 'client111', 'balance': 100}).text)
+#                      json={'accountID': 2, 'login': 'client11@som.nu', 'auth_method': 'password', 'token': '', 'password': 'client111', 'balance': 100}).text)

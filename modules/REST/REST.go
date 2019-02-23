@@ -463,7 +463,7 @@ func HandleFunctionArenaEnter(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		(a).AddNewTockenWithoutTeam(p.AccountID)
-		a = mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
+		//a = mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
 		//
 		mo := Messageout{
 			Status: "ok",
@@ -518,13 +518,13 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 	“declined”: []
 	}*/
 	type Message struct {
-		ArenaID  int             `json:"arenaID"`
-		Token    string          `json:"token"`
-		Pending  []StructForREST `json:"pending"`
-		Active   []StructForREST `json:"active"`
-		Incoming []StructForREST `json:"incoming"`
-		Rejected []StructForREST `json:"rejected"`
-		Declined []StructForREST `json:"declined"`
+		ArenaID int    `json:"arenaID"`
+		Token   string `json:"token"`
+		//Pending  []StructForREST `json:"pending"`
+		//Active   []StructForREST `json:"active"`
+		//Incoming []StructForREST `json:"incoming"`
+		//Rejected []StructForREST `json:"rejected"`
+		//Declined []StructForREST `json:"declined"`
 	}
 
 	if r.Method == "POST" {
