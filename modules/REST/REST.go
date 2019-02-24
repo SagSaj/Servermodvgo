@@ -689,7 +689,9 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			//////////
 			//////////
 			//log.Println(r.RequestURI)
-			a, are := mem.Arena.FindArenaIDByAccountID(p.AccountID)
+			//a, are := mem.Arena.FindArenaIDByAccountID(p.AccountID)
+			are := strconv.Itoa(m.ArenaID)
+			a := mem.Arena.FindArena(are)
 			if a == nil {
 
 			}
@@ -1134,7 +1136,7 @@ func GoServerListen(port string, tls bool) {
 	router.Handle("/currentVersion/", http.HandlerFunc(HandleFunctionCurrentVersion)) //tested
 	//http.HandleFunc("/wotmod/", HandleFunctionGetMod)
 	router.Handle("/account/login/", http.HandlerFunc(HandleFunctionLogin))
-	//http.HandleFunc("/account/register/", HandleFunctionRegistration)
+	http.HandleFunc("/account/register/", HandleFunctionRegistration)
 	////account/register/
 	router.Handle("/balance/", http.HandlerFunc(HandleFunctionBalance))
 	//

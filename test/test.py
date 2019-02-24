@@ -44,7 +44,8 @@ for _ in range(0, 3):
     print("status 1", temp)
     s = json.loads(temp)
     betid = s["incoming"][0]["id"]
-    print("2 declined", requests.post(var + "/parry/decline/", json={'token': Token2, "betID": betid}).text)
+    print("2 declined", requests.post(var + "/parry/decline/",
+                                      json={'token': Token2, "betID": betid, "arenaID": ArenaID}).text)
     time.sleep(2)
     print("status 1", requests.post(var + "/arena/situation/", json={'token': Token1, 'arenaID': ArenaID}).text)
     time.sleep(2)
@@ -60,7 +61,8 @@ for _ in range(0, 3):
     s = json.loads(temp)
     betid = s["incoming"][0]["id"]
     time.sleep(2)
-    print("1 activated", requests.post(var + "/parry/activate/", json={'token': Token1, "betID": betid}).text)
+    print("1 activated", requests.post(var + "/parry/activate/",
+                                       json={'token': Token1, "betID": betid, "arenaID": ArenaID}).text)
     time.sleep(2)
     print("status 1", requests.post(var + "/arena/situation/", json={'token': Token1, 'arenaID': ArenaID}).text)
     time.sleep(2)
