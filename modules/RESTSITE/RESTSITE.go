@@ -523,7 +523,7 @@ func HandleFunctionIndex(w http.ResponseWriter, r *http.Request) {
 			fullData["Techsupport"] = "тех. поддержка"
 
 			fullData["Andrey"] = "Андрей"
-			fullData["cofounder"] = "соискатель"
+			fullData["cofounder"] = "Операционный директор"
 			fullData["networks"] = "или напишите нам в социальных сетях"
 			fullData["PRODUCTS"] = "ПРОЕКТЫ"
 			fullData["String1"] = "Первая в мире внутриигровая беттинговая платформа основанная на ИИ."
@@ -576,12 +576,12 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 		homepageHTML := "dueler.html"
 		log.Println(r.RequestURI)
 		switch r.RequestURI {
-		case "/page.html":
-			homepageHTML = "page.html"
-			t = template.New("page.html")
-		case "/page2.html":
-			homepageHTML = "page2.html"
-			t = template.New("page2.html")
+		case "/user_guide.html":
+			homepageHTML = "user_guide.html"
+			t = template.New("user_guide.html")
+		case "/contacts.html":
+			homepageHTML = "contacts.html"
+			t = template.New("contacts.html")
 		case "/dueler.html":
 		case "/":
 		default:
@@ -651,7 +651,7 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 			fullData["Techsupport"] = "тех. поддержка"
 
 			fullData["Andrey"] = "Андрей"
-			fullData["cofounder"] = "соискатель"
+			fullData["cofounder"] = "Операционный директор"
 			fullData["networks"] = "или напишите нам в социальных сетях"
 			fullData["PRODUCTS"] = "ПРОЕКТЫ"
 			fullData["REGISTER"] = "РЕГИСТРАЦИЯ"
@@ -681,10 +681,10 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 			fullData["Points"] = "points"
 		}
 		switch r.RequestURI {
-		case "/page.html":
-			render(w, r, homepageTpl, "page.html", fullData)
-		case "/page2.html":
-			render(w, r, homepageTpl, "page2.html", fullData)
+		case "/user_guide.html":
+			render(w, r, homepageTpl, "user_guide.html", fullData)
+		case "/contacts.html":
+			render(w, r, homepageTpl, "contacts.html", fullData)
 		default:
 			render(w, r, homepageTpl, "dueler.html", fullData)
 		}

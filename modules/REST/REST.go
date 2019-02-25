@@ -105,7 +105,7 @@ func HandleFunctionRegistration(w http.ResponseWriter, r *http.Request) {
 
 					p, err = PersonStruct.InsertPersonWithID(m.Login, m.Password, m.AccountID)
 					if err != nil {
-						mo := MessageError{Error: "LOGIN_EXIST"}
+						mo := MessageError{Error: "LOGIN_EXISTS"}
 						b, err := json.Marshal(mo)
 						if err != nil {
 							http.Error(w, err.Error(), 401)
@@ -263,7 +263,13 @@ func ClassicLogin(w http.ResponseWriter, r *http.Request) {
 						http.Error(w, err.Error(), 400)
 					}
 				} else {
-					http.Error(w, "Not found this AccountID", 400)
+					mo := MessageError{Error: "WRONG_ACCOUNT_ID"}
+					b, err := json.Marshal(mo)
+					if err != nil {
+						http.Error(w, err.Error(), 401)
+					} else {
+						w.Write(b)
+					}
 				}
 			}
 		}
@@ -463,7 +469,7 @@ func HandleFunctionArenaEnter(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		(a).AddNewTockenWithoutTeam(p.AccountID)
-		a = mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
+		//a = mem.Arena.FindArena(strconv.Itoa(m.ArenaID))
 		//
 		mo := Messageout{
 			Status: "ok",
@@ -518,13 +524,13 @@ func HandleFunctionArenaSituation(w http.ResponseWriter, r *http.Request) {
 	“declined”: []
 	}*/
 	type Message struct {
-		ArenaID  int             `json:"arenaID"`
-		Token    string          `json:"token"`
-		Pending  []StructForREST `json:"pending"`
-		Active   []StructForREST `json:"active"`
-		Incoming []StructForREST `json:"incoming"`
-		Rejected []StructForREST `json:"rejected"`
-		Declined []StructForREST `json:"declined"`
+		ArenaID int    `json:"arenaID"`
+		Token   string `json:"token"`
+		//Pending  []StructForREST `json:"pending"`
+		//Active   []StructForREST `json:"active"`
+		//Incoming []StructForREST `json:"incoming"`
+		//Rejected []StructForREST `json:"rejected"`
+		//Declined []StructForREST `json:"declined"`
 	}
 
 	if r.Method == "POST" {
@@ -683,7 +689,9 @@ func HandleFunctionParry(w http.ResponseWriter, r *http.Request) {
 			//////////
 			//////////
 			//log.Println(r.RequestURI)
-			a, are := mem.Arena.FindArenaIDByAccountID(p.AccountID)
+			//a, are := mem.Arena.FindArenaIDByAccountID(p.AccountID)
+			are := strconv.Itoa(m.ArenaID)
+			a := mem.Arena.FindArena(are)
 			if a == nil {
 
 			}
@@ -1128,7 +1136,7 @@ func GoServerListen(port string, tls bool) {
 	router.Handle("/currentVersion/", http.HandlerFunc(HandleFunctionCurrentVersion)) //tested
 	//http.HandleFunc("/wotmod/", HandleFunctionGetMod)
 	router.Handle("/account/login/", http.HandlerFunc(HandleFunctionLogin))
-	//http.HandleFunc("/account/register/", HandleFunctionRegistration)
+	http.HandleFunc("/account/register/", HandleFunctionRegistration)
 	////account/register/
 	router.Handle("/balance/", http.HandlerFunc(HandleFunctionBalance))
 	//

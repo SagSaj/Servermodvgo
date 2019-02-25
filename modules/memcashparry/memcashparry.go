@@ -82,7 +82,12 @@ func GetIncoming(ID string, IDFrom int) []StructForREST {
 	a := []StructForREST{}
 	p, ok := ParryMems[ID]
 	if ok {
+
+		if p == nil {
+			return a
+		}
 		for i := 0; i < len(p.Parres); i += 1 {
+			log.Println("GetIncoming type " + p.Types[i] + " pto" + strconv.Itoa(p.To[i]) + " IDfrom " + strconv.Itoa(IDFrom))
 			if p.Types[i] == "incoming" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
@@ -94,7 +99,12 @@ func GetActive(ID string, IDFrom int) []StructForREST {
 	a := []StructForREST{}
 	p, ok := ParryMems[ID]
 	if ok {
+
+		if p == nil {
+			return a
+		}
 		for i := 0; i < len(p.Parres); i += 1 {
+			log.Println("GetActive type " + p.Types[i] + " pto" + strconv.Itoa(p.To[i]) + " IDfrom " + strconv.Itoa(IDFrom))
 			if p.Types[i] == "active" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
@@ -110,6 +120,7 @@ func GetPending(ID string, IDFrom int) []StructForREST {
 			return a
 		}
 		for i := 0; i < len(p.Parres); i += 1 {
+			log.Println("GetIncoming type " + p.Types[i] + " pto" + strconv.Itoa(p.To[i]) + " IDfrom " + strconv.Itoa(IDFrom))
 			if p.Types[i] == "pending" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}

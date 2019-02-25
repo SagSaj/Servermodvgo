@@ -75,10 +75,10 @@ func (a *ArenaInformation) VerifyActives(AccountID1 int) bool {
 	_, ok := a.Bets[AccountID1]
 	return ok
 }
-func (a *ArenaInformation) AddNewTockenWithoutTeam(AccointID int) {
-	log.Println("Add new enemy " + strconv.Itoa(AccointID))
+func (a *ArenaInformation) AddNewTockenWithoutTeam(AccountID int) {
+	log.Println("Add new enemy " + strconv.Itoa(AccountID))
 
-	a.Tockens = append(a.Tockens, AccointID)
+	a.Tockens = append(a.Tockens, AccountID)
 	//log.Println(a.Tockens)
 
 }
@@ -279,8 +279,11 @@ func (a *ArenaService) FindArena(Toc string) *ArenaInformation {
 }
 func (a *ArenaService) FindArenaIDByAccountID(AccountID int) (*ArenaInformation, string) {
 	for index, value := range a.Arena {
+		log.Println("LogMemCash FindArenas " + index)
 		for _, value2 := range value.Tockens {
+
 			if value2 == AccountID {
+				log.Println("LogMemCash ArenaFinded " + index)
 				return value, index
 			}
 		}
