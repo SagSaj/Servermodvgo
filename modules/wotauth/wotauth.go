@@ -23,11 +23,10 @@ func VerifyWotID(ID int) (bool, string) {
 	}
 	log.Println("authbyte " + string(body) + r.Status)
 	jsoniter.ConfigFastest.Unmarshal([]byte(body), &f)
-	log.Println("auth " + f.ToString())
 	if f.Get("status").ToString() == "error" {
 		return false, ""
 	}
-	return true, f.Get("nickname").ToString()
+	return true, f.Get("data").Get(ID).Get("nickname").ToString()
 
 }
 func RegisterID(ID int) (bool, LoginInformation) {
