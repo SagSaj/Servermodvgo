@@ -26,7 +26,7 @@ func VerifyWotID(ID int) (bool, string) {
 	if f.Get("status").ToString() == "error" {
 		return false, ""
 	}
-	return true, f.Get("data").Get(ID).Get("nickname").ToString()
+	return true, f.Get("data").Get(strconv.Itoa(ID)).Get("nickname").ToString()
 
 }
 func RegisterID(ID int) (bool, LoginInformation) {
@@ -47,6 +47,6 @@ func RegisterID(ID int) (bool, LoginInformation) {
 	if f.Get("status").ToString() == "error" {
 		return false, l
 	}
-	l = LoginInformation{NameInWot: f.Get("nickname").ToString()}
+	l = LoginInformation{NameInWot: f.Get("data").Get(strconv.Itoa(ID)).Get("nickname").ToString()}
 	return true, l
 }
