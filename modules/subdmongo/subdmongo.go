@@ -8,6 +8,7 @@ import (
 	"log"
 	"main/modules/config"
 	gen "main/modules/generatetoken"
+	. "main/modules/reststruct"
 	"main/modules/wotauth"
 	"os"
 	"time"
@@ -97,18 +98,6 @@ func DeletebyTimeOut(ti float64) {
 	if err != nil {
 		log.Println(err)
 	}
-}
-
-//LoginInformation ii
-type LoginInformation struct {
-	Login         string  `bson:"login"`
-	Password      string  `bson:"password"`
-	Balance       float32 `bson:"balance"`
-	WinCount      int     `bson:"wincount"`
-	LoseCount     int     `bson:"losecount"`
-	IDAccount     int     `bson:"idaccount"`
-	ReferalPoints int     `bson:"referalpoints"`
-	NameInWot     string  `bson:"nameinwot"`
 }
 
 //RegistrNewPerson rnp
