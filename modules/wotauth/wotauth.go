@@ -1,6 +1,7 @@
 package wotauth
 
 import (
+	"io/ioutil"
 	"log"
 	. "main/modules/reststruct"
 	"net/http"
@@ -15,13 +16,13 @@ func VerifyWotID(ID int) (bool, string) {
 		return false, ""
 	}
 	var f jsoniter.Any
-	var buf []byte
-	_, err = r.Body.Read(buf)
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return false, ""
 	}
-
-	jsoniter.ConfigFastest.Unmarshal(buf, &f)
+	log.Println("authbyte " + string(body) + r.Status)
+	jsoniter.ConfigFastest.Unmarshal([]byte(body), &f)
 	log.Println("auth " + f.ToString())
 	if f.Get("status").ToString() == "error" {
 		return false, ""
