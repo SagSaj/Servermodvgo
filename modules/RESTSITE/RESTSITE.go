@@ -9,6 +9,7 @@ import (
 	"log"
 	"main/modules/PersonStruct"
 	"main/modules/logschan"
+	"main/modules/reststruct"
 	"main/modules/subdmongo"
 	"net/http"
 	"os"
@@ -559,9 +560,9 @@ func HandleFunctionIndex(w http.ResponseWriter, r *http.Request) {
 var firstpl float32 = 300
 
 func WidthCount(args ...interface{}) string {
-	var s subdmongo.LoginInformation
+	var s reststruct.LoginInformation
 	if len(args) == 1 {
-		s, _ = args[0].(subdmongo.LoginInformation)
+		s, _ = args[0].(reststruct.LoginInformation)
 	}
 	ito := s.Balance / firstpl * 300
 	return fmt.Sprintf("%d", int(ito))
@@ -570,7 +571,7 @@ func add(x, y int) int {
 	return x + y
 }
 func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
-			s := ""
+	s := ""
 	if r.Method == "GET" {
 		t := template.New("dueler.html")
 		homepageHTML := "dueler.html"
@@ -591,7 +592,7 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 				s = isd
 				//fmt.Println(s)
 			} else {
-			http.Redirect(w, r, "http://dueler.club/", 301)
+				http.Redirect(w, r, "http://dueler.club/", 301)
 			}
 			return
 		}
@@ -623,6 +624,13 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 		//l[1].Balance / l[0].Balance * 300
 		if len(l) != 0 {
 			firstpl = l[0].Balance
+			for _,l1 := range l {
+				if l1.NameInWot == "" {
+					l1.Login = "test"
+				} else {
+					l1.Login = l1.NameInWot
+				}
+			}
 			fullData = map[string]interface{}{
 				"Host":           r.Host,
 				"PlayersPoints":  l,
