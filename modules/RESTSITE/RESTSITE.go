@@ -624,11 +624,11 @@ func HandleFunctionDueler(w http.ResponseWriter, r *http.Request) {
 		//l[1].Balance / l[0].Balance * 300
 		if len(l) != 0 {
 			firstpl = l[0].Balance
-			for _,l1 := range l {
-				if l1.NameInWot == "" {
-					l1.Login = "test"
+			for i := range l {
+				if l[i].NameInWot == "" {
+					l[i].Login = strings.Split(l[i].Login, "@")[0]
 				} else {
-					l1.Login = l1.NameInWot
+					l[i].Login = l[i].NameInWot
 				}
 			}
 			fullData = map[string]interface{}{
