@@ -1136,7 +1136,7 @@ func GoServerListen(port string, tls bool) {
 	router.Handle("/currentVersion/", http.HandlerFunc(HandleFunctionCurrentVersion)) //tested
 	//http.HandleFunc("/wotmod/", HandleFunctionGetMod)
 	router.Handle("/account/login/", http.HandlerFunc(HandleFunctionLogin))
-	http.HandleFunc("/account/register/", HandleFunctionRegistration)
+	//http.HandleFunc("/account/register/", HandleFunctionRegistration)
 	////account/register/
 	router.Handle("/balance/", http.HandlerFunc(HandleFunctionBalance))
 	//
