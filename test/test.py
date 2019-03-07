@@ -5,8 +5,10 @@ import time
 import requests
 
 # http://134.17.162.92:8000http://148.251.241.66:5050
-# var = "http://178.124.139.97:8000"
-var = "http://localhost:8000"
+var = "http://178.124.139.97:8000"
+#var = "http://localhost:8000"
+
+print(requests.get(var + "/currentVersion/").text)
 print(requests.post(var + "/account/register/", json={
     'accountID': 1, 'login': 'client11@som.nu', 'auth_method': 'password', 'token': '', 'password': 'client111',
     'balance': 100}).text)
@@ -17,6 +19,7 @@ print(requests.post(var + "/account/register/", json={
 
 s = json.loads(requests.post(var + "/account/login/", json={
     'accountID': 1, 'login': 'client11@som.nu', 'auth_method': 'password', 'token': '', 'password': 'client111'}).text)
+print(s)
 Token1 = s["token"]
 print("Token1 " + Token1)
 time.sleep(1)
