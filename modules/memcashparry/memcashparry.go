@@ -87,7 +87,7 @@ func GetIncoming(ID string, IDFrom int) []StructForREST {
 			return a
 		}
 		for i := 0; i < len(p.Parres); i += 1 {
-			log.Println("GetIncoming type " + p.Types[i] + " pto" + strconv.Itoa(p.To[i]) + " IDfrom " + strconv.Itoa(IDFrom))
+			//log.Println("GetIncoming type " + p.Types[i] + " pto" + strconv.Itoa(p.To[i]) + " IDfrom " + strconv.Itoa(IDFrom))
 			if p.Types[i] == "incoming" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
@@ -104,7 +104,7 @@ func GetActive(ID string, IDFrom int) []StructForREST {
 			return a
 		}
 		for i := 0; i < len(p.Parres); i += 1 {
-			log.Println("GetActive type " + p.Types[i] + " pto" + strconv.Itoa(p.To[i]) + " IDfrom " + strconv.Itoa(IDFrom))
+			//log.Println("GetActive type " + p.Types[i] + " pto" + strconv.Itoa(p.To[i]) + " IDfrom " + strconv.Itoa(IDFrom))
 			if p.Types[i] == "active" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
@@ -120,7 +120,7 @@ func GetPending(ID string, IDFrom int) []StructForREST {
 			return a
 		}
 		for i := 0; i < len(p.Parres); i += 1 {
-			log.Println("GetIncoming type " + p.Types[i] + " pto" + strconv.Itoa(p.To[i]) + " IDfrom " + strconv.Itoa(IDFrom))
+			//log.Println("GetIncoming type " + p.Types[i] + " pto" + strconv.Itoa(p.To[i]) + " IDfrom " + strconv.Itoa(IDFrom))
 			if p.Types[i] == "pending" && p.To[i] == IDFrom {
 				a = append(a, p.Parres[i])
 			}
@@ -174,10 +174,10 @@ func VerifyActive(ArenaID string, accountIDTo int, bet float32) bool {
 	p, ok := ParryMems[ArenaID]
 	if ok {
 		//a := mem.Arena.FindArena(ArenaID)
-		log.Println(len(p.Types))
+		//log.Println(len(p.Types))
 		okas := false
 		for index, value := range p.Types {
-			log.Println(value + " pto " + strconv.Itoa(p.To[index]) + " p.From[index] " + strconv.Itoa(p.From[index]) + " accountto " + strconv.Itoa(accountIDTo))
+			//log.Println(value + " pto " + strconv.Itoa(p.To[index]) + " p.From[index] " + strconv.Itoa(p.From[index]) + " accountto " + strconv.Itoa(accountIDTo))
 			if value == "pending" && p.From[index] == accountIDTo {
 				okas = true
 				p.ReplaceADV(p.Parres[index], "active")
@@ -244,7 +244,7 @@ func DeleteLongTocken() {
 		t.Sleep(55 * t.Second)
 
 		if i != len(ParryMems) {
-			log.Println("LogMemCashParry " + strconv.Itoa(len(ParryMems)))
+			//log.Println("LogMemCashParry " + strconv.Itoa(len(ParryMems)))
 			i = len(ParryMems)
 		}
 
